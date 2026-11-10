@@ -1,5 +1,5 @@
 const WHATSAPP_NUMBER = '919515647977';
-const GOOGLE_SHEETS_ENDPOINT = 'XXXXX';
+const FORM_ENDPOINT = 'https://formspree.io/f/xaeerobd';
 const MINIMUM_FORM_TIME_MS = 2500;
 
 const waLink = (message) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -61,19 +61,17 @@ if (leadForm) {
     if (!valid) { status.textContent = 'Please correct the highlighted fields.'; return; }
     if (raw.website || Date.now() - Number(raw.startedAt) < MINIMUM_FORM_TIME_MS) { status.textContent = 'Unable to submit this request.'; return; }
     submit.disabled = true;
-    status.textContent = GOOGLE_SHEETS_ENDPOINT === 'XXXXX' ? 'Opening WhatsApp…' : 'Sending your request…';
+    status.textContent = 'Sending your request…';
     const payload = { ...data, submittedAt: new Date().toISOString(), source: window.location.pathname };
-    if (GOOGLE_SHEETS_ENDPOINT !== 'XXXXX') {
-      try {
-        await fetch(GOOGLE_SHEETS_ENDPOINT, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
-      } catch (error) {
-        status.textContent = 'We could not save this request. Opening WhatsApp instead…';
-      }
+    try {
+      const response = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error('Form endpoint rejected submission');
+    } catch (error) {
+      status.textContent = 'We could not save this request. Opening WhatsApp instead…';
     }
     window.location.assign(waLink(`Hi SkaleSeed, I would like a free demo.\n\nName: ${data.name}\nEmail: ${data.email}\nWhatsApp: ${data.phone}\nBusiness details: ${data.message}`));
   });
