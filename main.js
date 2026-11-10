@@ -60,25 +60,21 @@ if (leadForm) {
     });
     if (!valid) { status.textContent = 'Please correct the highlighted fields.'; return; }
     if (raw.website || Date.now() - Number(raw.startedAt) < MINIMUM_FORM_TIME_MS) { status.textContent = 'Unable to submit this request.'; return; }
-    if (GOOGLE_SHEETS_ENDPOINT === 'XXXXX') { status.textContent = 'The form endpoint is being set up. Please message us on WhatsApp.'; return; }
-
     submit.disabled = true;
-    status.textContent = 'Sending your request…';
+    status.textContent = GOOGLE_SHEETS_ENDPOINT === 'XXXXX' ? 'Opening WhatsApp…' : 'Sending your request…';
     const payload = { ...data, submittedAt: new Date().toISOString(), source: window.location.pathname };
-    try {
-      await fetch(GOOGLE_SHEETS_ENDPOINT, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      });
-      leadForm.reset();
-      leadForm.elements.startedAt.value = String(Date.now());
-      status.textContent = 'Thank you. Your request has been sent.';
-    } catch (error) {
-      status.textContent = 'We could not send your request. Please try again or chat with us on WhatsApp.';
-    } finally {
-      submit.disabled = false;
+    if (GOOGLE_SHEETS_ENDPOINT !== 'XXXXX') {
+      try {
+        await fetch(GOOGLE_SHEETS_ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+      } catch (error) {
+        status.textContent = 'We could not save this request. Opening WhatsApp instead…';
+      }
     }
+    window.location.assign(waLink(`Hi SkaleSeed, I would like a free demo.\n\nName: ${data.name}\nEmail: ${data.email}\nWhatsApp: ${data.phone}\nBusiness details: ${data.message}`));
   });
 }
