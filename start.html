@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Request a free SkaleSeed sample page for your local business." />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="form-security.css" />
+  <title>Get your free demo — SkaleSeed</title>
+</head>
+<body class="start-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="shell nav-wrap"><a class="brand" href="index.html"><img src="assets/images/brand-logo-reversed-horizontal.png" alt="SkaleSeed" /></a><a class="back-link" href="index.html">← Back home</a></div></header>
+  <main id="main"><section class="start-layout"><div class="start-art" aria-hidden="true"></div><div class="shell start-grid"><div class="start-copy"><p class="eyebrow"><span></span> No cost · no pressure</p><h1>Let’s make your<br /><em>first impression</em> count.</h1><p class="lede">Tell us about yourself and your business. We’ll reply with the next step for your free demo.</p><ul class="start-points"><li><span>01</span> A free sample direction for your business</li><li><span>02</span> You see it before you decide</li><li><span>03</span> One team, one clear next step</li></ul></div>
+  <form class="lead-form" data-lead-form novalidate>
+    <div class="field"><label for="name">Your name</label><input id="name" name="name" required autocomplete="name" minlength="2" maxlength="80" pattern="[A-Za-zÀ-ÿ .'-]{2,80}" placeholder="Your full name" /><small class="field-error" id="name-error"></small></div>
+    <div class="field"><label for="email">Email address</label><input id="email" name="email" required type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" /><small class="field-error" id="email-error"></small></div>
+    <div class="field"><label for="phone">WhatsApp number</label><input id="phone" name="phone" required type="tel" inputmode="tel" autocomplete="tel" minlength="10" maxlength="18" pattern="[+0-9 ()-]{10,18}" placeholder="+91 XXXXX XXXXX" /><small class="field-error" id="phone-error"></small></div>
+    <div class="field"><label for="message">Tell us about your business</label><textarea id="message" name="message" required minlength="10" maxlength="1000" placeholder="What do you do, and what would you like help with?"></textarea><small class="field-error" id="message-error"></small></div>
+    <div class="form-trap" aria-hidden="true"><label for="website">Leave this field empty</label><input id="website" name="website" tabindex="-1" autocomplete="off" /></div>
+    <input type="hidden" name="startedAt" value="" />
+    <button class="button button-saffron" type="submit">Send my request <b>→</b></button><p class="form-note" data-form-status role="status" aria-live="polite">We use your details only to reply about your free demo.</p>
+  </form></div></section></main>
+  <script src="main.js"></script>
+</body>
+</html>

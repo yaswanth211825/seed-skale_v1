@@ -1,0 +1,2 @@
+.hero-shade{background-image:linear-gradient(90deg,#081b35 0%,#081b35e8 38%,#081b3530 73%,#081b3552),url('assets/images/hero-growth-journey.webp')!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+@media(max-width:800px){.hero-shade{background-image:linear-gradient(180deg,#081b35e8,#081b35e5 38%,#081b3568 100%),url('assets/images/hero-growth-journey.webp')!important;background-position:64% center!important}}
