@@ -1,0 +1,54 @@
+---
+// Phone number with a country code picker. India (+91) is the default, so people only
+// type their 10-digit number. forms.ts cleans the input (digits only, no leading zeros,
+// no repeated country code) and sends the full number in the hidden "phone" field.
+interface Props {
+  id: string;
+  label?: string;
+}
+const { id, label = 'WhatsApp number' } = Astro.props;
+
+const codes = [
+  ['+91', 'India'],
+  ['+1', 'USA / Canada'],
+  ['+44', 'United Kingdom'],
+  ['+971', 'UAE'],
+  ['+966', 'Saudi Arabia'],
+  ['+974', 'Qatar'],
+  ['+968', 'Oman'],
+  ['+965', 'Kuwait'],
+  ['+973', 'Bahrain'],
+  ['+65', 'Singapore'],
+  ['+60', 'Malaysia'],
+  ['+61', 'Australia'],
+  ['+64', 'New Zealand'],
+  ['+49', 'Germany'],
+  ['+977', 'Nepal'],
+  ['+94', 'Sri Lanka'],
+  ['+880', 'Bangladesh'],
+];
+---
+
+<div class="f-field">
+  <label class="f-label" for={id}>{label}</label>
+  <div class="f-phone">
+    <select class="f-input f-cc" name="phone_country" aria-label="Country code" data-cc>
+      {codes.map(([code, country]) => (
+        <option value={code} selected={code === '+91'}>{code} {country}</option>
+      ))}
+    </select>
+    <input
+      class="f-input"
+      id={id}
+      name="phone_number"
+      type="tel"
+      inputmode="numeric"
+      autocomplete="tel-national"
+      data-rule="phone"
+      required
+      placeholder="9876543210"
+    />
+  </div>
+  <input type="hidden" name="phone" value="" data-phone-full />
+  <small class="f-error" id={`${id}-error`}></small>
+</div>

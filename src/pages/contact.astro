@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
 import PageScene from '../components/PageScene.astro';
+import PhoneField from '../components/PhoneField.astro';
 import { site, whatsappLink } from '../data/site';
 
 const needs = ['Website', 'Web app or SaaS', 'AI assistant', 'Meta ads and SEO', 'Instagram content', 'Not sure yet'];
@@ -36,21 +37,17 @@ const needs = ['Website', 'Web app or SaaS', 'AI assistant', 'Meta ads and SEO',
               <small class="f-error" id="name-error"></small>
             </div>
             <div class="f-field">
-              <label class="f-label" for="business">Business name <small>(optional)</small></label>
-              <input class="f-input" id="business" name="business" data-rule="text" autocomplete="organization" maxlength="120" placeholder="Sample Biryani House" />
+              <label class="f-label" for="business">Business name</label>
+              <input class="f-input" id="business" name="business" data-rule="business" required autocomplete="organization" maxlength="120" placeholder="Sample Biryani House" />
               <small class="f-error" id="business-error"></small>
             </div>
           </div>
 
           <div class="f-row">
+            <PhoneField id="phone" />
             <div class="f-field">
-              <label class="f-label" for="phone">WhatsApp number</label>
-              <input class="f-input" id="phone" name="phone" type="tel" inputmode="tel" data-rule="phone" required autocomplete="tel" maxlength="20" placeholder="+91 98765 43210" />
-              <small class="f-error" id="phone-error"></small>
-            </div>
-            <div class="f-field">
-              <label class="f-label" for="email">Email <small>(optional)</small></label>
-              <input class="f-input" id="email" name="email" type="email" inputmode="email" data-rule="email" autocomplete="email" maxlength="254" placeholder="you@example.com" />
+              <label class="f-label" for="email">Email</label>
+              <input class="f-input" id="email" name="email" type="email" inputmode="email" data-rule="email" required autocomplete="email" maxlength="254" placeholder="you@example.com" />
               <small class="f-error" id="email-error"></small>
             </div>
           </div>
@@ -66,8 +63,8 @@ const needs = ['Website', 'Web app or SaaS', 'AI assistant', 'Meta ads and SEO',
           </fieldset>
 
           <div class="f-field">
-            <label class="f-label" for="message">Tell us about your business</label>
-            <textarea class="f-input" id="message" name="message" data-rule="message" required maxlength="1000" placeholder="What do you do, and what would you like help with?"></textarea>
+            <label class="f-label" for="message">Business details</label>
+            <textarea class="f-input" id="message" name="message" data-rule="message" required maxlength="1000" placeholder="What does your business do, where, and what would you like help with?"></textarea>
             <small class="f-error" id="message-error"></small>
           </div>
 

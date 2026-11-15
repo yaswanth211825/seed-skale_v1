@@ -215,6 +215,8 @@ html:not(.motion-on) [data-loop], html:not(.motion-on) [data-loop] *,
   transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 textarea.f-input { min-height: 120px; resize: vertical; }
+.f-phone { display: grid; grid-template-columns: 7.2rem minmax(0, 1fr); gap: 8px; }
+.f-cc { padding-inline: 12px 8px; cursor: pointer; text-overflow: ellipsis; }
 .f-input::placeholder { color: #8b919b; }
 .f-input:hover { border-color: var(--border-strong); }
 .f-input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 4px rgb(255 176 32 / 35%); }

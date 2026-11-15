@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SocialIcon from '../components/SocialIcon.astro';
+import PhoneField from '../components/PhoneField.astro';
 import { site, socials, whatsappLink } from '../data/site';
 
 const live = socials.filter((s) => s.external);
@@ -26,15 +27,28 @@ const live = socials.filter((s) => s.external);
           <div class="f-trap" aria-hidden="true"><label>Leave empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label></div>
           <div class="f-row">
             <div class="f-field">
-              <label class="f-label" for="cs-email">Email address</label>
+              <label class="f-label" for="cs-name">Your name</label>
+              <input class="f-input" id="cs-name" name="name" data-rule="name" required autocomplete="name" maxlength="80" placeholder="Your full name" />
+              <small class="f-error" id="cs-name-error"></small>
+            </div>
+            <div class="f-field">
+              <label class="f-label" for="cs-business">Business name</label>
+              <input class="f-input" id="cs-business" name="business" data-rule="business" required autocomplete="organization" maxlength="120" placeholder="Sample Biryani House" />
+              <small class="f-error" id="cs-business-error"></small>
+            </div>
+          </div>
+          <div class="f-row">
+            <div class="f-field">
+              <label class="f-label" for="cs-email">Email</label>
               <input class="f-input" id="cs-email" name="email" type="email" inputmode="email" data-rule="email" required autocomplete="email" maxlength="254" placeholder="you@example.com" />
               <small class="f-error" id="cs-email-error"></small>
             </div>
-            <div class="f-field">
-              <label class="f-label" for="cs-phone">Phone number</label>
-              <input class="f-input" id="cs-phone" name="phone" type="tel" inputmode="tel" data-rule="phone" required autocomplete="tel" maxlength="20" placeholder="+91 98765 43210" />
-              <small class="f-error" id="cs-phone-error"></small>
-            </div>
+            <PhoneField id="cs-phone" />
+          </div>
+          <div class="f-field">
+            <label class="f-label" for="cs-message">Business details</label>
+            <textarea class="f-input" id="cs-message" name="message" data-rule="message" required maxlength="1000" placeholder="What does your business do, where, and what would you like help with?"></textarea>
+            <small class="f-error" id="cs-message-error"></small>
           </div>
           <button class="btn btn-primary" type="submit">Notify me <span class="arrow" aria-hidden="true">→</span></button>
           <p class="f-status" data-status role="status" aria-live="polite"></p>
