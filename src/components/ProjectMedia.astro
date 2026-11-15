@@ -32,6 +32,7 @@ const host = p.liveUrl ? new URL(p.liveUrl).host.replace(/^www\./, '') : `${p.na
         sizes={sizes}
         quality={88}
         loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
       />
     </div>
   </div>
@@ -102,7 +103,7 @@ const host = p.liveUrl ? new URL(p.liveUrl).host.replace(/^www\./, '') : `${p.na
     overflow: hidden;
     border-radius: 6px;
     background: var(--cream);
-    color: #6b7a8f;
+    color: #4f5966;
     font-size: .68rem;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -123,7 +124,6 @@ const host = p.liveUrl ? new URL(p.liveUrl).host.replace(/^www\./, '') : `${p.na
     color: var(--white);
     font-size: .78rem;
     font-weight: 600;
-    backdrop-filter: blur(6px);
   }
 
   /* Drawn art for projects without public images */

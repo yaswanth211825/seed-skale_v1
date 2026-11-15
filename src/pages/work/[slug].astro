@@ -68,7 +68,7 @@ const schema = [
   <section class="showcase">
     <div class="container">
       <div class="showcase-frame" data-reveal="zoom">
-        <ProjectMedia project={p} eager />
+        <ProjectMedia project={p} eager sizes="(max-width: 1240px) 100vw, 1200px" />
       </div>
       {p.stats && (
         <dl class="stats" data-stagger>

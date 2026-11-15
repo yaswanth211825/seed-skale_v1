@@ -72,3 +72,15 @@ const setProgress = () => {
 setProgress();
 window.addEventListener('scroll', setProgress, { passive: true });
 window.addEventListener('resize', setProgress);
+
+/* Decorative loops start on the first interaction and pause while off-screen. */
+const startLoops = () => document.documentElement.classList.add('motion-on');
+['pointermove', 'pointerdown', 'scroll', 'keydown', 'touchstart'].forEach((ev) =>
+  window.addEventListener(ev, startLoops, { once: true, passive: true }),
+);
+if ('IntersectionObserver' in window) {
+  const loopIO = new IntersectionObserver((entries) => {
+    entries.forEach((e) => (e.target as HTMLElement).toggleAttribute('data-paused', !e.isIntersecting));
+  });
+  document.querySelectorAll<HTMLElement>('[data-loop]').forEach((el) => loopIO.observe(el));
+}

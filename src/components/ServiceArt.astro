@@ -6,7 +6,7 @@ interface Props {
 const { kind } = Astro.props;
 ---
 
-<div class:list={['art', kind]} aria-hidden="true">
+<div class:list={['art', kind]} data-loop aria-hidden="true">
   {kind === 'websites' && (
     <div class="browser">
       <div class="bar"><i></i><i></i><i></i><span></span></div>
@@ -87,7 +87,7 @@ const { kind } = Astro.props;
   .w80 { width: 80%; } .w60 { width: 60%; }
   .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .tiles span { height: 34px; border-radius: 8px; background: var(--cream); }
-  .wa-btn { justify-self: start; padding: 6px 12px; border-radius: 999px; background: #25d366; color: #fff; font: 700 .7rem var(--font-display); animation: ping-btn 2.6s ease-in-out infinite; }
+  .wa-btn { justify-self: start; padding: 6px 12px; border-radius: 999px; background: #25d366; color: #053b1c; font: 700 .7rem var(--font-display); animation: ping-btn 2.6s ease-in-out infinite; }
 
   /* Web app */
   .dash { display: grid; grid-template-columns: 44px 1fr; overflow: hidden; border-radius: 14px; background: #fff; box-shadow: 0 20px 40px rgb(11 31 58 / 16%); }
@@ -120,7 +120,7 @@ const { kind } = Astro.props;
   .area { fill: rgb(255 176 32 / 18%); }
   .line-path { fill: none; stroke: var(--navy); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 1.6s var(--ease-out) forwards; }
   .pill { position: absolute; top: 12px; right: 12px; padding: 5px 10px; border-radius: 999px; background: var(--saffron); color: var(--navy); font: 700 .66rem var(--font-display); }
-  .axis { display: flex; justify-content: space-between; color: #8a93a0; font-size: .62rem; }
+  .axis { display: flex; justify-content: space-between; color: #5f6875; font-size: .62rem; }
 
   /* Content */
   .reels { display: flex; justify-content: center; gap: 5%; height: 220px; }

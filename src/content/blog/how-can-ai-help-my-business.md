@@ -19,7 +19,7 @@ Most enquiries are the same ten questions. When nobody replies quickly, curious 
 
 In India, your customers may prefer Telugu, Hindi, Tamil or English. AI can understand and reply in the language the customer chooses, which makes people far more comfortable asking questions.
 
-> **What we did:** The PropaTrade assistant understands and answers in any language, so first-time visitors can ask in the language they think in. [Read more](/work/propatrade).
+> **What we did:** The PropaTrade assistant understands and answers in any language, so first-time visitors can ask in the language they think in. [See the multilingual assistant](/work/propatrade).
 
 ## Step 3: Find customers who are already looking for you
 

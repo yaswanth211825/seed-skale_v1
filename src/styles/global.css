@@ -30,8 +30,9 @@ body::before {
   inset: 0;
   z-index: 100;
   pointer-events: none;
-  opacity: .05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .06;
+  background-image: url('/grain.png');
+  background-size: 128px;
 }
 body.menu-open { overflow: hidden; }
 
@@ -168,7 +169,7 @@ button { font: inherit; color: inherit; }
 
 /* Headline line reveal: lines slide up from behind a mask (set up by motion.ts) */
 .split-line { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
-.split-line > .split-inner { display: block; will-change: transform; }
+.split-line > .split-inner { display: block; }
 
 /* Touch press feedback for interactive cards and buttons */
 @media (hover: none) {
@@ -176,4 +177,9 @@ button { font: inherit; color: inherit; }
 }
 
 /* Cards driven by the tilt primitive: let GSAP own transform, keep CSS for colour and shadow */
-.is-tilt { transition-property: border-color, box-shadow, background !important; will-change: transform; }
+.is-tilt { transition-property: border-color, box-shadow, background !important; }
+
+/* Endless decorative loops ([data-loop]) start after the first interaction and pause off-screen.
+   Keeps first load calm and fast, and saves battery. */
+html:not(.motion-on) [data-loop], html:not(.motion-on) [data-loop] *,
+[data-loop][data-paused], [data-loop][data-paused] * { animation-play-state: paused !important; }
