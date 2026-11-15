@@ -76,3 +76,59 @@ if (leadForm) {
     window.location.assign(waLink(`Hi SkaleSeed, I would like a free demo.\n\nName: ${data.name}\nEmail: ${data.email}\nWhatsApp: ${data.phone}\nBusiness details: ${data.message}`));
   });
 }
+
+// Keep the shared interaction and visual layer available on every page.
+if (!document.querySelector('link[href="site-polish.css"]')) {
+  const polish = document.createElement('link');
+  polish.rel = 'stylesheet';
+  polish.href = 'site-polish.css';
+  document.head.append(polish);
+}
+
+const serviceIntro = document.querySelector('.page-intro');
+if (serviceIntro) serviceIntro.classList.add('services-hero');
+document.querySelectorAll('.service-detail').forEach((section, index) => {
+  const ids = ['website', 'marketing', 'content'];
+  if (!section.id) section.id = ids[index];
+});
+
+const serviceOrbit = document.querySelector('[data-service-orbit]');
+if (serviceOrbit) {
+  const details = {
+    website: {
+      number: '01', title: 'Website',
+      copy: 'Your polished, search-friendly front door.',
+      href: 'services.html#website', label: 'Explore website'
+    },
+    marketing: {
+      number: '02', title: 'Marketing',
+      copy: 'Put your offer in front of ready-to-act people.',
+      href: 'services.html#marketing', label: 'Explore marketing'
+    },
+    content: {
+      number: '03', title: 'Content',
+      copy: 'Make your business memorable after the scroll.',
+      href: 'services.html#content', label: 'Explore content'
+    }
+  };
+  const buttons = [...serviceOrbit.querySelectorAll('[data-orbit-service]')];
+  const number = serviceOrbit.querySelector('[data-orbit-number]');
+  const title = serviceOrbit.querySelector('[data-orbit-title]');
+  const copy = serviceOrbit.querySelector('[data-orbit-copy]');
+  const link = serviceOrbit.querySelector('[data-orbit-link]');
+  const activate = (key) => {
+    const item = details[key];
+    if (!item) return;
+    buttons.forEach((button) => {
+      const active = button.dataset.orbitService === key;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    number.textContent = item.number;
+    title.textContent = item.title;
+    copy.textContent = item.copy;
+    link.href = item.href;
+    link.innerHTML = `${item.label} <b>→</b>`;
+  };
+  buttons.forEach((button) => button.addEventListener('click', () => activate(button.dataset.orbitService)));
+}
