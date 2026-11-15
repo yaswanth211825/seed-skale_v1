@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
+import PageScene from '../components/PageScene.astro';
 import { site, whatsappLink } from '../data/site';
 
 const needs = ['Website', 'Web app or SaaS', 'AI assistant', 'Meta ads and SEO', 'Instagram content', 'Not sure yet'];
@@ -12,9 +13,13 @@ const needs = ['Website', 'Web app or SaaS', 'AI assistant', 'Meta ads and SEO',
 >
   <PageIntro
     label="Free demo"
-    title="See your website before you pay."
+    title="See your website"
+    accent="before you pay."
     lede="Tell us about your business. We reply on WhatsApp with the next step and a sample page for you to look at."
-  />
+    sceneDesktopOnly
+  >
+    <PageScene kind="contact" slot="scene" />
+  </PageIntro>
 
   <section class="section">
     <div class="container contact-grid">

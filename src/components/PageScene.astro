@@ -1,0 +1,153 @@
+---
+// Drawn hero scenes for inner pages. Shapes, icons and type only, no photos.
+// Decorative: the parent PageIntro marks the scene aria-hidden.
+interface Props {
+  kind: 'services' | 'work' | 'process' | 'contact';
+}
+const { kind } = Astro.props;
+
+const tiles = [
+  { label: 'Websites', icon: 'M4 6h16v12H4z M4 9h16', tone: 'navy' },
+  { label: 'Web apps', icon: 'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z', tone: 'saffron' },
+  { label: 'AI', icon: 'M5 5h14v10H9l-4 4z M9 10h.01 M12 10h.01 M15 10h.01', tone: 'paper' },
+  { label: 'Ads & SEO', icon: 'M4 19V9 M10 19V5 M16 19v-7 M22 19H2', tone: 'coral' },
+  { label: 'Content', icon: 'M6 4h12v16H6z M10 9l5 3-5 3z', tone: 'mist' },
+];
+---
+
+{kind === 'services' && (
+  <div class="scene services">
+    <span class="hub"><span>One team</span></span>
+    <svg class="links" viewBox="0 0 400 340" preserveAspectRatio="none">
+      <path d="M200 170 L80 60 M200 170 L320 50 M200 170 L345 210 M200 170 L245 305 M200 170 L60 250" />
+    </svg>
+    {tiles.map((t, i) => (
+      <span class:list={['tile-chip', `t${i}`, t.tone]} data-parallax={String(0.08 + (i % 3) * 0.06)}>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={t.icon} /></svg>
+        {t.label}
+      </span>
+    ))}
+  </div>
+)}
+
+{kind === 'work' && (
+  <div class="scene work">
+    {[0, 1, 2].map((i) => (
+      <span class:list={['frame', `f${i}`]} data-parallax={String(0.06 + i * 0.07)}>
+        <span class="frame-bar"><i></i><i></i><i></i></span>
+        <span class="frame-body">
+          <span class="blk hero-blk"></span>
+          <span class="row"><span class="blk"></span><span class="blk"></span><span class="blk"></span></span>
+          <span class="line"></span><span class="line short"></span>
+        </span>
+      </span>
+    ))}
+    <span class="stamp" data-loop>Shipped ✓</span>
+  </div>
+)}
+
+{kind === 'process' && (
+  <div class="scene process">
+    <svg class="route" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet">
+      <path class="route-bg" d="M40 270 C 120 270, 90 170, 180 170 S 260 70, 360 60" />
+      <path class="route-fg" d="M40 270 C 120 270, 90 170, 180 170 S 260 70, 360 60" pathLength="1" />
+    </svg>
+    {['Demo', 'Plan', 'Build', 'Grow'].map((s, i) => (
+      <span class:list={['node', `n${i}`]}><b>{i + 1}</b>{s}</span>
+    ))}
+  </div>
+)}
+
+{kind === 'contact' && (
+  <div class="scene contact">
+    <div class="chat">
+      <span class="bubble in b0">Hi! I run a small bakery in Kondapur. Can you help?</span>
+      <span class="bubble out b1">Of course. Here is a free demo page with your name on it.</span>
+      <span class="bubble card b2"><span class="mini-bar"></span><b>Your Bakery</b><span class="line"></span><span class="line short"></span></span>
+      <span class="bubble in b3">Can we add our menu too?</span>
+      <span class="typing b4" data-loop><i></i><i></i><i></i></span>
+    </div>
+  </div>
+)}
+
+<style>
+  .scene { position: absolute; inset: 0; }
+
+  /* Services: five service chips wired to one hub */
+  .links { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .links path { fill: none; stroke: var(--border-strong); stroke-width: 1.5; stroke-dasharray: 4 6; vector-effect: non-scaling-stroke; }
+  .hub { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: grid; place-items: center; width: 116px; height: 116px; border-radius: 50%; background: var(--navy); color: var(--saffron); font: 800 1rem var(--font-display); box-shadow: 0 0 0 12px rgb(11 31 58 / 6%), 0 0 0 26px rgb(11 31 58 / 4%), 0 24px 44px rgb(11 31 58 / 25%); }
+  .tile-chip { position: absolute; display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 16px; font: 700 .95rem var(--font-display); white-space: nowrap; box-shadow: 0 14px 30px rgb(11 31 58 / 12%); }
+  .tile-chip.navy { background: var(--navy); color: #fff; border-color: transparent; }
+  .tile-chip.navy svg { color: var(--saffron); }
+  .tile-chip.saffron { background: var(--saffron); color: var(--navy); border-color: transparent; }
+  .tile-chip.paper { background: var(--paper); color: var(--text); }
+  .tile-chip.coral { background: #ffd9cf; color: var(--navy); border-color: transparent; }
+  .tile-chip.mist { background: var(--mist); color: var(--navy); }
+  .t0 { top: 10%; left: 4%; rotate: -4deg; }
+  .t1 { top: 6%; right: 4%; rotate: 3deg; }
+  .t2 { top: 55%; right: 0; rotate: -2deg; }
+  .t3 { bottom: 2%; left: 46%; rotate: 4deg; }
+  .t4 { top: 66%; left: 0; rotate: 2deg; }
+
+  /* Work: three fanned browser frames */
+  .frame { position: absolute; display: grid; grid-template-rows: auto 1fr; width: 62%; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid var(--border); border-radius: 18px; background: var(--paper); box-shadow: 0 24px 50px rgb(11 31 58 / 16%); }
+  .f0 { top: 4%; left: 0; rotate: -7deg; }
+  .f1 { top: 18%; left: 20%; rotate: 2deg; z-index: 1; }
+  .f2 { top: 34%; right: 0; rotate: 8deg; z-index: 2; }
+  .frame-bar { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--border); background: var(--cream-2); }
+  .frame-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--border-strong); }
+  .frame-body { display: grid; align-content: start; gap: 8px; padding: 12px; }
+  .blk { display: block; height: 30px; border-radius: 8px; background: var(--mist); }
+  .hero-blk { height: 56px; background: linear-gradient(120deg, var(--navy), #2443c4); }
+  .f1 .hero-blk { background: linear-gradient(120deg, var(--saffron), var(--coral)); }
+  .f2 .hero-blk { background: linear-gradient(120deg, #1f6f5c, #3ba57f); }
+  .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .line { display: block; height: 8px; border-radius: 8px; background: var(--cream-2); }
+  .line.short { width: 60%; }
+  .stamp { position: absolute; right: 6%; bottom: 4%; z-index: 3; padding: 10px 16px; border-radius: 999px; background: var(--navy); color: var(--saffron); font: 800 .95rem var(--font-display); rotate: -6deg; box-shadow: 0 14px 28px rgb(11 31 58 / 25%); animation: bob 3.2s ease-in-out infinite; }
+
+  /* Process: a winding route with four stops */
+  .route { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .route path { fill: none; stroke-width: 3; stroke-linecap: round; }
+  .route-bg { stroke: var(--border); stroke-dasharray: 2 10; }
+  .route-fg { stroke: var(--saffron); stroke-dasharray: 1; stroke-dashoffset: 1; animation: route 2.2s .4s var(--ease) forwards; }
+  .node { position: absolute; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border: 1px solid var(--border); border-radius: 999px; background: var(--paper); font: 700 .95rem var(--font-display); box-shadow: 0 12px 26px rgb(11 31 58 / 12%); translate: -50% -50%; opacity: 0; animation: pop var(--dur-2) var(--ease) forwards; }
+  .node b { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--navy); color: var(--saffron); font-size: .85rem; }
+  .n0 { left: 10%; top: 84%; animation-delay: .5s; }
+  .n1 { left: 30%; top: 62%; animation-delay: 1s; }
+  .n2 { left: 58%; top: 46%; animation-delay: 1.5s; }
+  .n3 { left: 88%; top: 19%; animation-delay: 2s; }
+  .n3 b { background: var(--saffron); color: var(--navy); }
+
+  /* Contact: a WhatsApp-style conversation */
+  .scene.contact { position: relative; }
+  .chat { position: relative; display: grid; align-content: center; gap: 10px; max-width: 380px; margin-inline: auto; padding: var(--s-3); border-radius: 28px; background: radial-gradient(circle at 20% 0%, rgb(255 176 32 / 18%), transparent 50%), var(--mist); }
+  .bubble { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: .95rem; line-height: 1.4; box-shadow: 0 6px 16px rgb(11 31 58 / 8%); opacity: 0; animation: pop var(--dur-2) var(--ease) forwards; }
+  .in { justify-self: start; border-bottom-left-radius: 6px; background: var(--paper); color: var(--text); }
+  .out { justify-self: end; border-bottom-right-radius: 6px; background: var(--navy); color: #fff; }
+  .card { justify-self: end; display: grid; gap: 6px; width: 62%; border-bottom-right-radius: 6px; background: var(--paper); }
+  .card b { font-family: var(--font-display); }
+  .mini-bar { height: 40px; border-radius: 10px; background: linear-gradient(120deg, var(--saffron), var(--coral)); }
+  .b0 { animation-delay: .3s; } .b1 { animation-delay: .9s; } .b2 { animation-delay: 1.4s; } .b3 { animation-delay: 2s; }
+  .typing { justify-self: start; display: inline-flex; gap: 4px; padding: 12px 14px; border-radius: 18px; background: var(--paper); }
+  .typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--border-strong); animation: dot 1.2s ease-in-out infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; }
+  .typing i:nth-child(3) { animation-delay: .3s; }
+
+  @keyframes route { to { stroke-dashoffset: 0; } }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+  @keyframes bob { 50% { translate: 0 -6px; } }
+  @keyframes dot { 30% { translate: 0 -4px; opacity: .5; } }
+
+  @media (max-width: 480px) {
+    .tile-chip { padding: 9px 12px; font-size: .85rem; }
+    .hub { width: 92px; height: 92px; font-size: .9rem; }
+    .node { font-size: .85rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .route-fg { animation: none; stroke-dashoffset: 0; }
+    .node, .bubble { animation: none; opacity: 1; }
+    .stamp, .typing i { animation: none; }
+  }
+</style>

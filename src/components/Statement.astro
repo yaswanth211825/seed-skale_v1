@@ -1,0 +1,62 @@
+---
+// Big statement that lights up word by word as it scrolls past the middle of the screen.
+interface Props {
+  label: string;
+  text: string;
+  foot?: string;
+  link?: { href: string; label: string };
+}
+const { label, text, foot, link } = Astro.props;
+---
+
+<section class="section statement">
+  <div class="container narrow">
+    <p class="label">{label}</p>
+    <p class="big-words" data-words>
+      {text.split(' ').map((w) => <span>{w} </span>)}
+    </p>
+    {(foot || link) && (
+      <div class="statement-foot" data-reveal>
+        {foot && <p>{foot}</p>}
+        {link && <a class="text-link" href={link.href}>{link.label} <span class="arrow" aria-hidden="true">→</span></a>}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .narrow { max-width: 980px; }
+  .label { margin-bottom: var(--s-3); }
+  .big-words { font: 750 clamp(1.9rem, 1.2rem + 3.4vw, 4rem)/1.12 var(--font-display); letter-spacing: -.035em; }
+  .big-words span { color: #8a8d93; transition: color var(--dur-2) var(--ease); }
+  .big-words span:global(.on) { color: var(--text); }
+  .statement-foot { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--s-3); margin-top: var(--s-6); padding-top: var(--s-3); border-top: 1px dashed var(--border); }
+  .statement-foot p { max-width: 52ch; color: var(--text-muted); }
+  .text-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--text); font-weight: 700; text-decoration: underline; text-decoration-color: var(--saffron); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+  .text-link .arrow { transition: transform var(--dur-1) var(--ease); }
+  .text-link:hover .arrow { transform: translateX(4px); }
+  @media (max-width: 640px) { .statement-foot { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const blocks = Array.from(document.querySelectorAll<HTMLElement>('[data-words]')).map((el) => ({
+    el,
+    words: Array.from(el.querySelectorAll('span')),
+  }));
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const vh = window.innerHeight;
+    blocks.forEach(({ el, words }) => {
+      const r = el.getBoundingClientRect();
+      const p = still ? 1 : Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.35)));
+      const lit = Math.round(p * words.length);
+      words.forEach((w, i) => w.classList.toggle('on', i < lit));
+    });
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+</script>

@@ -136,6 +136,8 @@ button { font: inherit; color: inherit; }
 }
 .js [data-reveal='left'] { transform: translateX(calc(var(--rise) * -1.5)); }
 .js [data-reveal='right'] { transform: translateX(calc(var(--rise) * 1.5)); }
+/* Sideways reveals must never widen the page on phones */
+main { overflow-x: clip; }
 .js [data-reveal='zoom'] { transform: scale(.94); }
 .js [data-reveal].is-in { opacity: 1; transform: none; }
 

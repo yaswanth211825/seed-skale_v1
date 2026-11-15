@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
+import PageScene from '../components/PageScene.astro';
+import Statement from '../components/Statement.astro';
 import { steps } from '../data/services';
 import { faq } from '../data/faq';
 
@@ -20,12 +22,25 @@ const faqSchema = {
 >
   <PageIntro
     label="How it works"
-    title="From first idea to real momentum."
+    title="From first idea"
+    accent="to real momentum."
     lede="One team beside you from the first rough sketch to launch day, and after."
+  >
+    <a class="btn btn-primary" href="/contact">Start with a free demo <span class="arrow" aria-hidden="true">→</span></a>
+    <PageScene kind="process" slot="scene" />
+  </PageIntro>
+
+  <Statement
+    label="See it first"
+    text="You see a real page with your business name on it before you pay anything. If you like it, we build the rest together, one step at a time."
   />
 
-  <section class="section">
+  <section class="section panel mist">
     <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="label">The steps</p>
+        <h2>Four steps, <em>no surprises.</em></h2>
+      </div>
       <div class="timeline" data-timeline>
         <span class="progress" aria-hidden="true"></span>
         <ol>
@@ -57,6 +72,8 @@ const faqSchema = {
 </BaseLayout>
 
 <style>
+  .mist { background: linear-gradient(180deg, #eef2f8, #e6ecf5); }
+  .mist .num { background: var(--paper); }
   .timeline { position: relative; max-width: 860px; --line-x: 31px; }
   .timeline ol { display: grid; margin: 0; padding: 0; list-style: none; }
   .timeline::before, .progress {

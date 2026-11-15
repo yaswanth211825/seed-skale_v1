@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageIntro from '../../components/PageIntro.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import WorkGrid from '../../components/WorkGrid.astro';
+import PageScene from '../../components/PageScene.astro';
+import { projects } from '../../data/projects';
 ---
 
 <BaseLayout
@@ -11,11 +13,16 @@ import WorkGrid from '../../components/WorkGrid.astro';
 >
   <PageIntro
     label="Work"
-    title="Real projects. Real problems solved."
+    title="Real projects."
+    accent="Real problems solved."
     lede="Platforms, AI tools and websites we have designed and built, with the story behind each one."
-  />
+    ticker={projects.map((p) => p.name)}
+  >
+    <a class="btn btn-secondary" href="#projects">Browse the work <span aria-hidden="true">↓</span></a>
+    <PageScene kind="work" slot="scene" />
+  </PageIntro>
 
-  <section class="section">
+  <section class="section" id="projects">
     <div class="container">
       <h2 class="sr-only">All projects</h2>
       <WorkGrid />

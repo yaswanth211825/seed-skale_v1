@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
 import CtaBand from '../components/CtaBand.astro';
 import ServiceArt from '../components/ServiceArt.astro';
+import PageScene from '../components/PageScene.astro';
+import Statement from '../components/Statement.astro';
 import { services } from '../data/services';
 import { projects } from '../data/projects';
 
@@ -15,18 +17,36 @@ const withProof = services.map((s) => ({ ...s, project: projects.find((p) => p.s
 >
   <PageIntro
     label="Services"
-    title="Start with one thing, or build the whole system."
+    title="Start with one thing,"
+    accent="or build it all."
     lede="Websites, web apps, AI, ads and content. Pick what you need now and add the rest when you are ready."
+    ticker={['Websites', 'Web apps', 'SaaS', 'AI assistants', 'Automation', 'Meta ads', 'SEO', 'Instagram reels', 'Branding']}
+  >
+    <a class="btn btn-primary" href="/contact">Get a free demo <span class="arrow" aria-hidden="true">→</span></a>
+    <PageScene kind="services" slot="scene" />
+  </PageIntro>
+
+  <Statement
+    label="Grow in steps"
+    text="Most businesses do not need everything on day one. Start with the piece that brings customers in, and add the rest when it pays for itself."
   />
 
+  <nav class="jump" aria-label="Services on this page">
+    <div class="container jump-inner">
+      {withProof.map((s, i) => (
+        <a href={`#${s.id}`} data-jump={s.id}><span>0{i + 1}</span>{s.title}</a>
+      ))}
+    </div>
+  </nav>
+
   {withProof.map((s, i) => (
-    <section class:list={['section', 'service', { light: i % 2 === 1 }]} id={s.id}>
+    <section class:list={['section', 'svc', { 'panel mist': i % 2 === 1 }]} id={s.id} data-svc>
       <div class:list={['container', 'service-grid', { flip: i % 2 === 1 }]}>
         <div class="service-art" data-reveal={i % 2 ? 'right' : 'left'}>
           <ServiceArt kind={s.id as 'websites' | 'web-apps' | 'ai' | 'marketing' | 'content'} />
         </div>
         <div class="service-copy" data-reveal={i % 2 ? 'left' : 'right'}>
-          <p class="label">0{i + 1}</p>
+          <p class="label">0{i + 1} / 0{withProof.length}</p>
           <h2>{s.title}</h2>
           <p class="lede">{s.summary}</p>
           <ul class="ticks">{s.points.map((p) => <li>{p}</li>)}</ul>
@@ -44,6 +64,17 @@ const withProof = services.map((s) => ({ ...s, project: projects.find((p) => p.s
 </BaseLayout>
 
 <style>
+  .jump { position: sticky; top: calc(var(--header-h) + 12px); z-index: 5; margin-bottom: var(--s-2); pointer-events: none; }
+  .jump-inner { display: flex; justify-content: center; }
+  .jump-inner { gap: 4px; width: max-content; max-width: calc(100% - 2 * var(--gutter)); margin-inline: auto; padding: 6px; overflow-x: auto; scrollbar-width: none; border: 1px solid var(--border); border-radius: 999px; background: rgb(255 253 248 / 92%); box-shadow: 0 12px 30px rgb(11 31 58 / 10%); pointer-events: auto; }
+  .jump a { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 999px; color: var(--text-muted); font-weight: 600; font-size: .92rem; white-space: nowrap; text-decoration: none; transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease); }
+  .jump a span { color: var(--label); font: 800 .75rem var(--font-display); }
+  .jump a:hover { color: var(--text); }
+  .jump a.is-on { background: var(--navy); color: #fff; }
+  .jump a.is-on span { color: var(--saffron); }
+  .svc { scroll-margin-top: calc(var(--header-h) + 72px); }
+  .svc.mist { background: linear-gradient(180deg, #eef2f8, #e6ecf5); }
+  .svc + .svc:not(.mist) { padding-top: calc(var(--section-y) * .8); }
   .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-8); align-items: center; }
   .service-grid.flip .service-art { order: 2; }
   .service-art { min-width: 0; }
@@ -83,7 +114,28 @@ const withProof = services.map((s) => ({ ...s, project: projects.find((p) => p.s
     .service-grid { gap: var(--s-6); }
   }
   @media (max-width: 768px) {
+    .jump-inner { justify-content: flex-start; }
     .service-grid { grid-template-columns: 1fr; gap: var(--s-4); }
     .service-grid.flip .service-art { order: 0; }
   }
 </style>
+
+<script>
+  // Highlight the service currently on screen in the jump bar.
+  const links = new Map(
+    Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-jump]')).map((a) => [a.dataset.jump!, a]),
+  );
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        links.forEach((a, id) => a.classList.toggle('is-on', id === e.target.id));
+        const a = links.get(e.target.id);
+        const bar = a?.parentElement;
+        if (a && bar) bar.scrollTo({ left: a.offsetLeft - (bar.clientWidth - a.clientWidth) / 2, behavior: 'smooth' });
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  document.querySelectorAll('[data-svc]').forEach((s) => io.observe(s));
+</script>
