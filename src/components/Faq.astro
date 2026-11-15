@@ -1,0 +1,57 @@
+---
+import { faq } from '../data/faq';
+---
+
+<div class="faq" data-stagger>
+  {faq.map((item, i) => (
+    <details class="item" open={i === 0}>
+      <summary>
+        <span>{item.q}</span>
+        <span class="icon" aria-hidden="true"></span>
+      </summary>
+      <div class="answer"><p>{item.a}</p></div>
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq { display: grid; gap: var(--s-1); max-width: 860px; }
+  .item {
+    border: 1px solid var(--light-border);
+    border-radius: var(--r-card);
+    background: var(--light-surface);
+    transition: box-shadow var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out);
+  }
+  .item:hover { border-color: rgb(53 99 255 / 35%); }
+  .item[open] { box-shadow: var(--shadow-light); }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2);
+    min-height: 64px;
+    padding: var(--s-2) var(--s-3);
+    color: var(--light-text);
+    font: 600 1.0625rem/1.4 var(--font-display);
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker { display: none; }
+  .icon { position: relative; flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--mist); transition: background var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out); }
+  .icon::before, .icon::after { content: ''; position: absolute; top: 50%; left: 50%; width: 12px; height: 2px; border-radius: 2px; background: var(--navy); translate: -50% -50%; transition: transform var(--t-base) var(--ease-out); }
+  .icon::after { transform: rotate(90deg); }
+  .item[open] .icon { background: var(--saffron); transform: rotate(180deg); }
+  .item[open] .icon::after { transform: rotate(0deg); }
+  .answer { padding: 0 var(--s-3) var(--s-3); }
+  .answer p { color: var(--light-text-muted); max-width: 70ch; }
+  .item[open] .answer { animation: open .35s var(--ease-out); }
+  @keyframes open { from { opacity: 0; transform: translateY(-6px); } }
+  @media (max-width: 480px) {
+    summary { padding: var(--s-2); }
+    .answer { padding: 0 var(--s-2) var(--s-2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .item[open] .answer { animation: none; }
+    .icon, .icon::after { transition: none; }
+  }
+</style>

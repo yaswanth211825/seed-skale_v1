@@ -1,0 +1,46 @@
+---
+import SocialIcon from './SocialIcon.astro';
+import { whatsappLink } from '../data/site';
+---
+
+<a class="wa-fab" href={whatsappLink()} target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+  <SocialIcon id="whatsapp" size={26} />
+  <span class="wa-label">Chat with us</span>
+</a>
+
+<style>
+  .wa-fab {
+    position: fixed;
+    z-index: 40;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 56px;
+    padding: 0 15px;
+    border-radius: 999px;
+    background: #25d366;
+    color: #06301a;
+    font: 600 .95rem var(--font-display);
+    text-decoration: none;
+    box-shadow: 0 10px 28px rgb(0 0 0 / 30%);
+    transition: transform var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wa-fab:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgb(0 0 0 / 34%); }
+  .wa-fab:active { transform: scale(.95); }
+  .wa-fab:focus-visible { outline-color: var(--white); }
+  .wa-label { padding-right: 4px; }
+
+  /* Hidden while the mobile menu is open */
+  :global(body.menu-open) .wa-fab { opacity: 0; pointer-events: none; }
+
+  @media (max-width: 640px) {
+    .wa-fab { width: 56px; padding: 0; justify-content: center; }
+    .wa-label { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wa-fab { transition: none; }
+  }
+</style>

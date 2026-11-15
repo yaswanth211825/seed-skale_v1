@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ServiceArt from '../components/ServiceArt.astro';
+import { services } from '../data/services';
+import { projects } from '../data/projects';
+
+const withProof = services.map((s) => ({ ...s, project: projects.find((p) => p.slug === s.proof) }));
+---
+
+<BaseLayout
+  title="Services | SkaleSeed"
+  description="Web apps, websites, AI assistants, Meta ads, SEO and Instagram content for growing businesses. One team from first idea to real customers."
+>
+  <PageIntro
+    label="Services"
+    title="Start with one thing, or build the whole system."
+    lede="Websites, web apps, AI, ads and content. Pick what you need now and add the rest when you are ready."
+  />
+
+  {withProof.map((s, i) => (
+    <section class:list={['section', 'service', { light: i % 2 === 1 }]} id={s.id}>
+      <div class:list={['container', 'service-grid', { flip: i % 2 === 1 }]}>
+        <div class="service-art" data-reveal={i % 2 ? 'right' : 'left'}>
+          <ServiceArt kind={s.id as 'websites' | 'web-apps' | 'ai' | 'marketing' | 'content'} />
+        </div>
+        <div class="service-copy" data-reveal={i % 2 ? 'left' : 'right'}>
+          <p class="label">0{i + 1}</p>
+          <h2>{s.title}</h2>
+          <p class="lede">{s.summary}</p>
+          <ul class="ticks">{s.points.map((p) => <li>{p}</li>)}</ul>
+          {s.project && (
+            <a class="proof-link" href={`/work/${s.project.slug}`}>
+              See how we did it for {s.project.name} <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-8); align-items: center; }
+  .service-grid.flip .service-art { order: 2; }
+  .service-art { min-width: 0; }
+
+  .proof { position: relative; display: block; overflow: hidden; border: 1px solid var(--border); border-radius: var(--r-panel); box-shadow: var(--shadow-dark); color: inherit; text-decoration: none; }
+  .light .proof { border-color: var(--light-border); box-shadow: 0 20px 48px rgb(11 31 58 / 18%); }
+  .proof :global(.media) { aspect-ratio: 16 / 11; }
+  .proof-tag {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--navy);
+    color: var(--white);
+    font-size: .8rem;
+    font-weight: 600;
+  }
+
+  .reels { display: flex; justify-content: center; gap: 4%; aspect-ratio: 16 / 11; padding: 6% 8%; border-radius: var(--r-panel); background: radial-gradient(circle at 30% 20%, rgb(255 107 74 / 30%), transparent 55%), radial-gradient(circle at 80% 90%, rgb(255 176 32 / 30%), transparent 50%), var(--navy-2); }
+  .reel { position: relative; flex: 1; display: grid; align-content: end; gap: 6px; padding: 10% 8%; border-radius: 18px; background: linear-gradient(180deg, #2a4a78, #13294a); box-shadow: 0 16px 30px rgb(0 0 0 / 30%); }
+  .reel.r1 { translate: 0 -8%; background: linear-gradient(180deg, #ff8a5c, #c4443a); }
+  .reel.r2 { background: linear-gradient(180deg, #ffc857, #d9852a); }
+  .play { position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 30%; aspect-ratio: 1; border-radius: 50%; background: rgb(255 255 255 / 85%); }
+  .play::after { content: ''; position: absolute; top: 50%; left: 55%; translate: -50% -50%; border-left: 12px solid var(--navy); border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+  .bar { height: 6px; border-radius: 6px; background: rgb(255 255 255 / 70%); }
+  .bar.short { width: 60%; }
+
+  .service-copy { display: grid; gap: var(--s-2); justify-items: start; }
+  .service-copy h2 { font-size: var(--fs-h2); }
+  .lede { color: var(--text-muted); font-size: 1.125rem; max-width: 48ch; }
+  .ticks { display: grid; gap: var(--s-1); margin: var(--s-1) 0 0; padding: 0; list-style: none; font-weight: 500; }
+  .ticks li::before { content: '✓'; margin-right: 10px; color: var(--label); font-weight: 700; }
+  .proof-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: var(--s-1); color: var(--label); font-weight: 700; text-decoration: none; }
+
+  @media (max-width: 1024px) {
+    .service-grid { gap: var(--s-6); }
+  }
+  @media (max-width: 768px) {
+    .service-grid { grid-template-columns: 1fr; gap: var(--s-4); }
+    .service-grid.flip .service-art { order: 0; }
+  }
+</style>

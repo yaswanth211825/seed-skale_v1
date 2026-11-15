@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import { steps } from '../data/services';
+import { faq } from '../data/faq';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<BaseLayout
+  title="How it works | SkaleSeed"
+  description="From a free demo page to launch and growth: how SkaleSeed takes your business online, step by step, with answers to common questions."
+  schema={[faqSchema]}
+>
+  <PageIntro
+    label="How it works"
+    title="From first idea to real momentum."
+    lede="One team beside you from the first rough sketch to launch day, and after."
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="timeline" data-timeline>
+        <span class="progress" aria-hidden="true"></span>
+        <ol>
+        {steps.map((s, i) => (
+          <li data-reveal>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <div class="body">
+              <h2>{s.title}</h2>
+              <p>{s.text}</p>
+            </div>
+          </li>
+        ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section light" id="faq">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="label">Questions</p>
+        <h2>Things people ask before starting.</h2>
+      </div>
+      <Faq />
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .timeline { position: relative; max-width: 860px; --line-x: 31px; }
+  .timeline ol { display: grid; margin: 0; padding: 0; list-style: none; }
+  .timeline::before, .progress {
+    content: '';
+    position: absolute;
+    top: 32px;
+    bottom: 32px;
+    left: var(--line-x);
+    width: 2px;
+    border-radius: 2px;
+  }
+  .timeline::before { background: var(--border); }
+  .progress { background: linear-gradient(var(--saffron), var(--blue)); transform-origin: top; transform: scaleY(var(--p, 0)); }
+  .timeline li { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: var(--s-4); padding-bottom: var(--s-8); }
+  .timeline li:last-child { padding-bottom: 0; }
+  .num {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--label);
+    font: 700 1.125rem var(--font-display);
+    transition: background var(--t-base) var(--ease-out), color var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out);
+  }
+  .timeline li.is-in .num { background: var(--saffron); color: var(--navy); border-color: var(--saffron); }
+  .timeline li:hover .num { transform: scale(1.08); }
+  .body { display: grid; gap: var(--s-1); padding-top: 12px; }
+  .body h2 { font-size: var(--fs-h2); }
+  .body p { color: var(--text-muted); font-size: 1.125rem; max-width: 52ch; }
+  @media (max-width: 640px) {
+    .timeline { --line-x: 23px; }
+    .timeline::before, .progress { top: 24px; bottom: 24px; }
+    .timeline li { grid-template-columns: 48px 1fr; gap: var(--s-2); padding-bottom: var(--s-6); }
+    .num { width: 48px; height: 48px; font-size: 1rem; }
+    .body { padding-top: 6px; }
+  }
+</style>
+
+<script>
+  // Fill the timeline line as the reader scrolls through it.
+  const tl = document.querySelector<HTMLElement>('[data-timeline]');
+  if (tl) {
+    const update = () => {
+      const r = tl.getBoundingClientRect();
+      const mid = window.innerHeight * 0.6;
+      const p = Math.min(1, Math.max(0, (mid - r.top) / r.height));
+      tl.style.setProperty('--p', p.toFixed(3));
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+  }
+</script>

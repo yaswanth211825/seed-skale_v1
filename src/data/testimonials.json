@@ -1,0 +1,44 @@
+[
+  {
+    "company": "ElastoMech",
+    "sector": "Industrial safety · Manufacturing",
+    "quote": "Buyers used to ask us for spec sheets over email. Now they find them on the site and come to us ready to order.",
+    "project": "elastomech",
+    "draft": true
+  },
+  {
+    "company": "ZeroX",
+    "sector": "Campus services · NIT Warangal",
+    "quote": "The queues were gone in the first week. Students just upload, pay and pick up their prints.",
+    "project": "zerox",
+    "draft": true
+  },
+  {
+    "company": "ClassVerse",
+    "sector": "Tech education",
+    "quote": "Booking a workshop takes a minute now. More students sign up, and fewer drop off halfway.",
+    "project": "classverse",
+    "draft": true
+  },
+  {
+    "company": "PropaTrade",
+    "sector": "Trading education",
+    "quote": "New visitors just ask the assistant. Our team stopped answering the same questions all day.",
+    "project": "propatrade",
+    "draft": true
+  },
+  {
+    "company": "Sunrise Interiors",
+    "sector": "Interior design · Markapur",
+    "quote": "Families see our finished homes before they call. Most enquiries now start on WhatsApp.",
+    "project": "sunrise-interiors",
+    "draft": true
+  },
+  {
+    "company": "TradingFloor",
+    "sector": "Copy trading",
+    "quote": "One trade goes to every client account at once. And no more monthly platform fees.",
+    "project": "tradingfloor",
+    "draft": true
+  }
+]

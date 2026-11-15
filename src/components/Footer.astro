@@ -1,0 +1,151 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-horizontal.png';
+import SocialIcon from './SocialIcon.astro';
+import { site, nav, cta, socials, whatsappLink } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer dark panel">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="/" aria-label="SkaleSeed home">
+        <Image src={logo} alt="SkaleSeed" height={32} densities={[1, 2]} loading="lazy" />
+      </a>
+      <p>{site.tagline}. Based in {site.location.split(',')[0]}, working everywhere.</p>
+      <a class="btn btn-primary" href={cta.href}>{cta.label}</a>
+    </div>
+
+    <nav class="footer-col" aria-label="Footer">
+      <h2>Explore</h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-col">
+      <h2>Contact</h2>
+      <ul>
+        <li><a href={whatsappLink()} rel="noopener" target="_blank">{site.whatsappDisplay}</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><span>{site.location}</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-social">
+    <h2 class="sr-only">Follow SkaleSeed</h2>
+    <ul>
+      {socials.map((s) => (
+        <li>
+          <a
+            href={s.href}
+            aria-label={s.label}
+            title={s.label}
+            {...(s.external ? { target: '_blank', rel: 'noopener' } : {})}
+          >
+            <SocialIcon id={s.id} />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {year} SkaleSeed. All rights reserved.</p>
+    <a href="#top">Back to top</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-bottom: clamp(8px, 1.4vw, 20px);
+    background:
+      radial-gradient(ellipse at 90% 0%, rgb(255 176 32 / 14%), transparent 50%),
+      radial-gradient(ellipse at 0% 100%, rgb(53 99 255 / 14%), transparent 50%),
+      var(--navy-deep);
+    padding-top: var(--s-8);
+    /* room for the floating WhatsApp button on phones */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1.2fr;
+    gap: var(--s-6) var(--s-4);
+    padding-bottom: var(--s-4);
+  }
+  .footer-brand { display: grid; justify-items: start; gap: var(--s-3); max-width: 380px; }
+  .footer-brand > a:first-child { display: inline-flex; padding-block: 6px; }
+  .footer-brand img { height: 32px; width: auto; }
+  .footer-brand p { color: var(--text-muted); font-size: .95rem; }
+
+  .footer-col h2 {
+    margin-bottom: var(--s-2);
+    font-size: var(--fs-small);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--saffron);
+  }
+  .footer-col ul { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+  .footer-col a, .footer-col span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    min-width: 44px;
+    color: var(--text-muted);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: color var(--t-fast) var(--ease-out);
+  }
+  .footer-col a:hover { color: var(--text); }
+
+  .footer-social { padding-bottom: var(--s-4); }
+  .footer-social ul { display: flex; flex-wrap: wrap; gap: var(--s-1); margin: 0; padding: 0; list-style: none; }
+  .footer-social a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text-muted);
+    transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out),
+      background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+  }
+  .footer-social a:hover { color: var(--navy); background: var(--saffron); border-color: var(--saffron); transform: translateY(-2px); }
+  .footer-social a:active { transform: scale(.94); }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-2);
+    padding-block: var(--s-3) calc(var(--s-3) + 72px);
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  .footer-bottom a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .footer-bottom a:hover { color: var(--text); }
+
+  @media (min-width: 961px) {
+    .footer-bottom { padding-bottom: var(--s-3); }
+  }
+  @media (max-width: 860px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; max-width: 520px; }
+  }
+  @media (max-width: 479px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>

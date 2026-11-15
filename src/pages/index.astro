@@ -1,0 +1,328 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Testimonials from '../components/Testimonials.astro';
+import ServiceArt from '../components/ServiceArt.astro';
+import WorkGrid from '../components/WorkGrid.astro';
+import AskAITeaser from '../components/AskAITeaser.astro';
+import HeroMockup from '../components/HeroMockup.astro';
+import { cta } from '../data/site';
+import { steps } from '../data/services';
+import { projects } from '../data/projects';
+
+
+const system = [
+  { n: '01', kind: 'websites' as const, title: 'Websites', tag: 'your digital home', text: 'A fast, beautiful site that shows your work and sends enquiries straight to WhatsApp.', href: '/services#websites', icon: 'M4 6h16v12H4z M4 9h16' },
+  { n: '02', kind: 'web-apps' as const, title: 'Web apps', tag: 'run it online', text: 'Ordering, booking and dashboards that take the queues and paperwork out of your day.', href: '/services#web-apps', icon: 'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z' },
+  { n: '03', kind: 'ai' as const, title: 'AI assistants', tag: 'answer instantly', text: 'An assistant that answers customers in their own language, even when you are busy.', href: '/services#ai', icon: 'M5 5h14v10H9l-4 4z M9 10h.01 M12 10h.01 M15 10h.01' },
+  { n: '04', kind: 'marketing' as const, title: 'Marketing & SEO', tag: 'get discovered', text: 'Meta ads and SEO that bring the right people to your door, from Google and from AI search.', href: '/services#marketing', icon: 'M4 19V9 M10 19V5 M16 19v-7 M22 19H2' },
+  { n: '05', kind: 'content' as const, title: 'Content', tag: 'stay memorable', text: 'Reels and posts planned, shot and edited, so people remember you after the scroll.', href: '/services#content', icon: 'M6 4h12v16H6z M10 9l5 3-5 3z' },
+];
+
+const statement = 'People decide in seconds whether to call you. We make those seconds count, on Google, on WhatsApp and on your own site.';
+---
+
+<BaseLayout
+  title="SkaleSeed | Be the business they remember"
+  description="Websites, web apps, AI and marketing that turn a quick search into a real conversation with your business. Based in Hyderabad. See it before you pay."
+>
+  <!-- 1 · Hero -->
+  <section class="hero">
+    <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="label">Hyderabad · Built for local business</p>
+      <h1>
+        Be the business<br />
+        they <em class="remember">remember.<svg class="scribble" viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16 C 60 6, 140 4, 296 12" /></svg></em>
+      </h1>
+      <p class="lede">
+        Websites, content and marketing that turn a quick search into a real conversation with your business.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href={cta.href}>Get your free demo <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-secondary" href="#system">Explore what we do <span aria-hidden="true">↓</span></a>
+      </div>
+      <ul class="checks">
+        <li>See it before you pay</li>
+        <li>Domain included</li>
+        <li>One team, start to finish</li>
+      </ul>
+    </div>
+    <div class="hero-visual"><HeroMockup /></div>
+    </div>
+  </section>
+
+  <!-- 2 · Projects strip -->
+  <section class="strip" aria-label="Projects we have shipped">
+    <p class="strip-label">Trusted to build for</p>
+    <div class="marquee">
+      <ul class="marquee-track">
+        {[0, 1].map((copy) =>
+          projects.map((p) => (
+            <li aria-hidden={copy === 1 ? 'true' : undefined}>
+              <a href={`/work/${p.slug}`} tabindex={copy === 1 ? -1 : undefined}>{p.name}</a>
+              <span class="sep" aria-hidden="true">✦</span>
+            </li>
+          ))
+        )}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 · Statement, lights up word by word as you scroll -->
+  <section class="section statement" id="momentum">
+    <div class="container narrow">
+      <p class="label">First impressions happen online</p>
+      <p class="big-words" data-words aria-label={statement}>
+        {statement.split(' ').map((w) => <span aria-hidden="true">{w} </span>)}
+      </p>
+      <div class="statement-foot" data-reveal>
+        <p>Clear words, real photos of your work and one tap to reach you. That is usually all it takes for a stranger to become a customer.</p>
+        <a class="text-link" href="/how-it-works">See how we work <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · What we build: cards stack over each other as you scroll -->
+  <section class="section system panel" id="system">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <p class="label">What we build</p>
+        <h2>Every piece of growing online. <em>Working as one.</em></h2>
+        <p>A site that earns trust, tools that save time, and marketing that brings people in, built by one team so it all fits together.</p>
+      </div>
+      <ol class="stack" data-stack>
+        {system.map((s, i) => (
+          <li class="stack-card" style={`--i:${i}`} data-stack-card>
+            <a class="stack-inner" href={s.href}>
+              <div class="stack-copy">
+                <span class="svc-top">
+                  <span class="svc-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon} /></svg>
+                  </span>
+                  <span class="svc-n">{s.n} / 05</span>
+                </span>
+                <h3>{s.title} <em>{s.tag}</em></h3>
+                <p>{s.text}</p>
+                <span class="svc-more">See the service <span class="arrow" aria-hidden="true">→</span></span>
+              </div>
+              <div class="stack-art"><ServiceArt kind={s.kind} /></div>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5 · Feedback -->
+  <Testimonials />
+
+  <!-- 6 · Selected work -->
+  <section class="section" id="work">
+    <div class="container">
+      <div class="section-head row" data-reveal>
+        <div>
+          <p class="label">Selected work</p>
+          <h2>Real projects. <em>Real results.</em></h2>
+        </div>
+        <a class="btn btn-secondary" href="/work">All projects <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <WorkGrid limit={6} />
+    </div>
+  </section>
+
+
+  <!-- 8 · How it works -->
+  <section class="section" id="process">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <p class="label">How it works</p>
+        <h2>See it first. <em>Decide later.</em></h2>
+      </div>
+      <ol class="steps" data-stagger>
+        {steps.map((s, i) => (
+          <li class="step">
+            <span class="step-num">{i + 1}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 9 · Ask AI -->
+  <section class="ask-section">
+    <div class="container"><AskAITeaser /></div>
+  </section>
+
+  <CtaBand title="Let's get your business found." text="Tell us what you do. We will send a free demo page with your business name on it, before you pay anything." />
+</BaseLayout>
+
+<style>
+  /* ---------- Hero ---------- */
+  .hero { padding-top: clamp(32px, 6vw, 80px); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: center; gap: var(--s-6); }
+  .hero-copy { display: grid; justify-items: start; gap: var(--s-3); }
+  h1 { font-size: var(--fs-display); line-height: 1; animation: rise .9s var(--ease-out) both; }
+  .remember { position: relative; display: inline-block; padding-right: .06em; }
+  .scribble { position: absolute; left: 0; right: 0; bottom: -.12em; width: 100%; height: .22em; overflow: visible; }
+  .scribble path { fill: none; stroke: var(--saffron); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 320; stroke-dashoffset: 320; animation: draw 1.2s .6s var(--ease-out) forwards; }
+  .lede { max-width: 34rem; color: var(--text-muted); font-size: clamp(1.05rem, 1rem + .3vw, 1.25rem); animation: rise .9s .1s var(--ease-out) both; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); animation: rise .9s .2s var(--ease-out) both; }
+  .checks { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); margin: 0; padding: 0; list-style: none; color: var(--text-muted); font-size: .9rem; }
+  .checks li::before { content: '✓'; margin-right: 8px; color: var(--label); font-weight: 800; }
+  .hero-visual { animation: rise 1s .15s var(--ease-out) both; }
+
+  /* ---------- Strip ---------- */
+  .strip { display: flex; align-items: center; gap: var(--s-4); margin-top: var(--s-8); padding-block: var(--s-3); border-block: 1px dashed var(--border); }
+  .strip-label { flex: none; padding-left: max(var(--gutter), calc((100vw - var(--container)) / 2)); color: var(--text-muted); font-size: .85rem; white-space: nowrap; }
+  .marquee { flex: 1; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .marquee-track { display: flex; width: max-content; margin: 0; padding: 0; list-style: none; animation: slide 40s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-track li { display: flex; align-items: center; }
+  .marquee-track a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: var(--s-3); font: 700 1.2rem var(--font-display); letter-spacing: -.02em; color: var(--text); opacity: .7; text-decoration: none; white-space: nowrap; transition: opacity var(--t-fast); }
+  .marquee-track a:hover { opacity: 1; }
+  .sep { color: var(--saffron); font-size: .75rem; }
+
+  /* ---------- Statement ---------- */
+  .narrow { max-width: 980px; }
+  .statement .label { margin-bottom: var(--s-3); }
+  .big-words { font: 750 clamp(1.9rem, 1.2rem + 3.4vw, 4rem)/1.12 var(--font-display); letter-spacing: -.035em; }
+  .big-words span { opacity: .14; transition: opacity .35s var(--ease-out); }
+  .big-words span.on { opacity: 1; }
+  .statement-foot { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--s-3); margin-top: var(--s-6); padding-top: var(--s-3); border-top: 1px dashed var(--border); }
+  .statement-foot p { max-width: 52ch; color: var(--text-muted); }
+  .text-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--text); font-weight: 700; text-decoration: underline; text-decoration-color: var(--saffron); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+  .text-link .arrow { transition: transform var(--t-base) var(--ease-out); }
+  .text-link:hover .arrow { transform: translateX(4px); }
+
+  /* ---------- What we build: stacking cards ---------- */
+  .system { background: linear-gradient(180deg, #eef2f8, #e6ecf5); }
+  .stack { display: grid; gap: 6vh; max-width: 1080px; margin: 0 auto; padding: 0; list-style: none; }
+  .stack-card { position: sticky; top: calc(var(--header-h) + 36px + var(--i) * 18px); }
+  .stack-inner {
+    display: grid;
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    align-items: stretch;
+    gap: var(--s-4);
+    min-height: min(62vh, 500px);
+    padding: var(--s-4);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background: var(--paper);
+    box-shadow: 0 -2px 0 rgb(255 255 255 / 70%) inset, 0 24px 60px rgb(11 31 58 / 12%);
+    color: inherit;
+    text-decoration: none;
+    transform-origin: 50% 0;
+    will-change: transform;
+  }
+  .stack-copy { display: grid; align-content: center; gap: var(--s-2); padding-block: var(--s-2); }
+  .svc-top { display: flex; align-items: center; justify-content: space-between; }
+  .svc-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--navy); color: var(--saffron); }
+  .svc-n { color: var(--text-muted); font: 700 .8rem var(--font-display); letter-spacing: .12em; }
+  .stack-copy h3 { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.6rem); }
+  .stack-copy h3 em { display: block; margin-top: 4px; font-size: .8em; }
+  .stack-copy p { max-width: 40ch; color: var(--text-muted); font-size: 1.0625rem; }
+  .svc-more { display: inline-flex; gap: 6px; margin-top: var(--s-1); color: var(--text); font-weight: 700; }
+  .svc-more .arrow { transition: transform var(--dur-1) var(--ease); }
+  .stack-inner:hover .svc-more .arrow { transform: translateX(4px); }
+  .stack-art { min-height: 240px; }
+
+  /* ---------- Work ---------- */
+  .section-head.row { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; max-width: none; }
+  .section-head.row > div { display: grid; gap: var(--s-2); max-width: 640px; }
+
+  /* ---------- Steps ---------- */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
+  .step { position: relative; display: grid; align-content: start; gap: var(--s-1); padding: var(--s-4) var(--s-3); border: 1px solid var(--border); border-radius: var(--r-card); background: var(--surface); box-shadow: var(--shadow-card); }
+  .step:not(:last-child)::after { content: ''; position: absolute; top: 52px; right: -24px; width: 24px; border-top: 2px dashed var(--border-strong); }
+  .step h3 { font-size: var(--fs-h3); margin-top: var(--s-1); }
+  .step p { color: var(--text-muted); }
+  .step-num { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--navy); color: var(--saffron); font: 800 1rem var(--font-display); }
+
+  .ask-section { padding-block: 0 var(--section-y); }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes slide { to { transform: translateX(-50%); } }
+
+  /* ---------- Tablet and below: stacked versions ---------- */
+  @media (max-width: 1020px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-visual { max-width: 520px; width: 100%; margin-inline: auto; }
+
+    .steps { grid-template-columns: 1fr 1fr; }
+    .step:not(:last-child)::after { display: none; }
+  }
+  @media (max-width: 640px) {
+    .hero-actions, .hero-actions .btn { width: 100%; }
+    .stack { gap: var(--s-3); }
+    .stack-card { position: static; }
+    .stack-inner { grid-template-columns: 1fr; min-height: 0; padding: var(--s-3); gap: var(--s-2); }
+    .stack-art { order: -1; min-height: 200px; }
+    .strip { flex-direction: column; align-items: stretch; gap: var(--s-1); }
+    .strip-label { padding-left: var(--gutter); }
+    .statement-foot { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    h1, .lede, .hero-actions, .hero-visual { animation: none; }
+    .scribble path { animation: none; stroke-dashoffset: 0; }
+    .marquee { overflow-x: auto; }
+    .marquee-track { animation: none; }
+    .big-words span { opacity: 1; }
+  }
+</style>
+
+<script>
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (n: number) => Math.min(1, Math.max(0, n));
+
+  // Statement words light up as the paragraph passes the middle of the screen.
+  const words = document.querySelector<HTMLElement>('[data-words]');
+  const wordEls = words ? Array.from(words.querySelectorAll('span')) : [];
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const vh = window.innerHeight;
+    if (words) {
+      const r = words.getBoundingClientRect();
+      const p = still ? 1 : clamp((vh * 0.85 - r.top) / (r.height + vh * 0.35));
+      const lit = Math.round(p * wordEls.length);
+      wordEls.forEach((w, i) => w.classList.toggle('on', i < lit));
+    }
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+
+
+  // What we build: each card tucks back as the next one slides over it (tablet and desktop).
+  if (!still && window.matchMedia('(min-width: 641px)').matches) {
+    Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([{ gsap }, { ScrollTrigger }]) => {
+      gsap.registerPlugin(ScrollTrigger);
+      const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-stack-card]'));
+      cards.forEach((card, i) => {
+        const next = cards[i + 1];
+        if (!next) return;
+        const inner = card.querySelector<HTMLElement>('.stack-inner');
+        const st = { trigger: next, start: 'top bottom', end: 'top 30%', scrub: true };
+        // The card tucks back; its contents fade so only a clean card edge peeks out.
+        gsap.to(inner, { scale: 0.92 + i * 0.012, ease: 'none', scrollTrigger: st });
+        gsap.to(inner!.children, { opacity: 0, ease: 'none', scrollTrigger: { ...st, start: 'top 70%' } });
+      });
+    });
+  } else if (!still) {
+    // Phones: each card rises in from slightly behind.
+    Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([{ gsap }, { ScrollTrigger }]) => {
+      gsap.registerPlugin(ScrollTrigger);
+      document.querySelectorAll<HTMLElement>('[data-stack-card] .stack-inner').forEach((inner) => {
+        gsap.from(inner, { y: 60, scale: 0.94, opacity: 0, ease: 'none', scrollTrigger: { trigger: inner, start: 'top 95%', end: 'top 65%', scrub: 0.5 } });
+      });
+    });
+  }
+</script>

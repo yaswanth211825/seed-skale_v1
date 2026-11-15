@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import WorkGrid from '../../components/WorkGrid.astro';
+---
+
+<BaseLayout
+  title="Work | SkaleSeed"
+  description="Case studies from SkaleSeed and Amiron Technology: SaaS platforms, AI agents, automation and websites, with the problem, the build and the result."
+>
+  <PageIntro
+    label="Work"
+    title="Real projects. Real problems solved."
+    lede="Platforms, AI tools and websites we have designed and built, with the story behind each one."
+  />
+
+  <section class="section">
+    <div class="container">
+      <WorkGrid />
+    </div>
+  </section>
+
+  <CtaBand title="Have a project in mind?" text="Tell us what you want to build. We reply with a plan and a timeline." />
+</BaseLayout>

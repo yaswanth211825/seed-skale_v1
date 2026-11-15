@@ -1,0 +1,109 @@
+/* SkaleSeed design tokens — warm cream base, navy panels, saffron accents. */
+:root {
+  /* Brand colours */
+  --navy: #0b1f3a;
+  --navy-2: #132b4d;
+  --navy-3: #1b3a63;
+  --navy-deep: #07172b;
+  --saffron: #ffb020;
+  --saffron-hover: #ffc04d;
+  --white: #ffffff;
+  --blue: #3563ff;
+  --coral: #ff6b4a;
+  --mist: #f2f5fb;
+
+  /* Cream palette */
+  --cream: #fbf6ea;
+  --cream-2: #f3ead6;
+  --paper: #fffdf8;
+  --amber-ink: #8a5a00;    /* saffron family, readable on cream */
+  --accent-ink: #b06f00;   /* large serif accents on cream */
+
+  /* Default (cream) theme */
+  --bg: var(--cream);
+  --surface: var(--paper);
+  --surface-raised: var(--white);
+  --text: var(--navy);
+  --text-muted: #56606e;
+  --border: rgb(11 31 58 / 12%);
+  --border-strong: rgb(11 31 58 / 32%);
+  --chip: rgb(11 31 58 / 6%);
+  --field: var(--white);
+  --label: var(--amber-ink);
+  --em: var(--accent-ink);
+  --accent: var(--saffron);
+  --focus: var(--blue);
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 70%) inset, 0 10px 30px rgb(60 40 0 / 7%);
+
+  /* Kept for components that refer to the "light" tint */
+  --light-bg: var(--cream-2);
+  --light-surface: var(--paper);
+  --light-text: var(--navy);
+  --light-text-muted: #56606e;
+  --light-border: rgb(11 31 58 / 12%);
+
+  /* Type */
+  --font-display: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', 'Times New Roman', serif;
+  --fs-display: clamp(2.75rem, 1.6rem + 5vw, 5.75rem);
+  --fs-h1: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
+  --fs-h2: clamp(1.85rem, 1.3rem + 2.4vw, 3rem);
+  --fs-h3: clamp(1.2rem, 1.05rem + .6vw, 1.5rem);
+  --fs-body: clamp(1rem, .96rem + .2vw, 1.125rem);
+  --fs-small: .875rem;
+  --tracking-tight: -.03em;
+
+  /* Spacing — 8px grid */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-6: 48px;
+  --s-8: 64px;
+  --s-12: 96px;
+  --section-y: clamp(72px, 7vw + 32px, 144px);
+
+  /* Shape */
+  --r-control: 12px;
+  --r-card: 22px;
+  --r-panel: clamp(24px, 3vw, 40px);
+  --shadow-light: 0 10px 30px rgb(60 40 0 / 8%);
+  --shadow-dark: 0 20px 50px rgb(11 31 58 / 22%);
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: clamp(16px, 4vw, 24px);
+  --header-h: 76px;
+
+  /* Motion tokens: one curve, three durations, one stagger. Everything uses these. */
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --dur-1: 200ms;   /* hover, tap, toggles */
+  --dur-2: 600ms;   /* reveals, entrances */
+  --dur-3: 1200ms;  /* count-ups, scene settles */
+  --stagger: 80ms;
+  --rise: 24px;
+  /* Aliases kept so older components follow the same tokens */
+  --ease-out: var(--ease);
+  --t-fast: var(--dur-1);
+  --t-base: var(--dur-1);
+}
+
+/* Navy panels: same tokens, dark values */
+.dark {
+  --bg: var(--navy);
+  --surface: var(--navy-2);
+  --surface-raised: var(--navy-3);
+  --text: var(--white);
+  --text-muted: #b9c6d6;
+  --border: rgb(255 255 255 / 14%);
+  --border-strong: rgb(255 255 255 / 40%);
+  --chip: rgb(255 255 255 / 8%);
+  --field: var(--navy);
+  --label: var(--saffron);
+  --em: var(--saffron);
+  --focus: var(--saffron);
+  --light-text-muted: #b9c6d6;
+  background-color: var(--bg);
+  color: var(--text);
+}

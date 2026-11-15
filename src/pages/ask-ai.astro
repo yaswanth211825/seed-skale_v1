@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AskAI from '../components/AskAI.astro';
+import CtaBand from '../components/CtaBand.astro';
+---
+
+<BaseLayout
+  title="Ask AI about SkaleSeed | ChatGPT, Claude, Gemini, Perplexity"
+  description="Ask ChatGPT, Claude, Gemini, Perplexity or Google AI about SkaleSeed in one tap: what we do, what we have built and whether we fit your business."
+>
+  <AskAI heading="h1" />
+
+  <section class="section light">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="label">Why we built this</p>
+        <h2>An honest second opinion, in one tap.</h2>
+      </div>
+      <ol class="why" data-stagger>
+        <li>
+          <span>1</span>
+          <h3>Pick what you need</h3>
+          <p>A website, a web app, ads, content, or not sure yet. Add your business if you like.</p>
+        </li>
+        <li>
+          <span>2</span>
+          <h3>Choose your assistant</h3>
+          <p>It opens in a new tab with a clear question about SkaleSeed already written for you.</p>
+        </li>
+        <li>
+          <span>3</span>
+          <h3>Read and decide</h3>
+          <p>The assistant reads our site and our work, and tells you plainly if we are a good fit.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand title="Already convinced?" text="Skip the research. Tell us about your business and get a free demo page with your name on it." />
+</BaseLayout>
+
+<style>
+  .why { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
+  .why li { display: grid; align-content: start; gap: var(--s-1); padding: var(--s-4); border-radius: var(--r-card); background: var(--white); border: 1px solid var(--light-border); }
+  .why span { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--navy); color: var(--saffron); font-weight: 800; }
+  .why h3 { margin-top: var(--s-1); font-size: var(--fs-h3); }
+  .why p { color: var(--light-text-muted); }
+  @media (max-width: 860px) { .why { grid-template-columns: 1fr; } }
+</style>

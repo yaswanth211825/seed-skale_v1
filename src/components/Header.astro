@@ -1,0 +1,224 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-horizontal-navy.png';
+import { nav, cta } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="site-header" data-header>
+  <div class="header-bar">
+    <a class="brand" href="/" aria-label="SkaleSeed home">
+      <Image src={logo} alt="SkaleSeed" height={28} densities={[1, 2, 3]} loading="eager" fetchpriority="high" />
+    </a>
+
+    <nav class="nav-desktop" aria-label="Main">
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a class="btn btn-dark header-cta" href={cta.href}>{cta.label} <span class="arrow" aria-hidden="true">→</span></a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
+      <span class="sr-only" data-menu-label>Open menu</span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-menu hidden>
+    <nav aria-label="Mobile">
+      <ul>
+        {nav.map((item, i) => (
+          <li style={`--i:${i}`}>
+            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              <span>{item.label}</span><span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="btn btn-primary mobile-cta" href={cta.href}>{cta.label}</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 12px var(--gutter) 0;
+    pointer-events: none;
+  }
+  .header-bar {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    width: min(100%, 1240px);
+    min-height: 60px;
+    margin-inline: auto;
+    padding: 8px 8px 8px 20px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgb(255 253 248 / 82%);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 80%) inset, 0 6px 24px rgb(60 40 0 / 6%);
+    transition: box-shadow var(--t-base) var(--ease-out), background var(--t-base) var(--ease-out);
+  }
+  .site-header.is-scrolled .header-bar { box-shadow: 0 1px 0 rgb(255 255 255 / 80%) inset, 0 12px 32px rgb(60 40 0 / 12%); background: rgb(255 253 248 / 92%); }
+
+  .brand { display: inline-flex; flex: none; margin-right: auto; }
+  .brand img { height: 28px; width: auto; }
+
+  .nav-desktop ul { display: flex; gap: 2px; margin: 0; padding: 0; list-style: none; }
+  .nav-desktop a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: .95rem;
+    text-decoration: none;
+    transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+  }
+  .nav-desktop a:hover { color: var(--text); background: var(--chip); }
+  .nav-desktop a[aria-current='page'] { color: var(--text); background: var(--cream-2); }
+  .nav-desktop a[aria-current='page']::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: var(--saffron);
+  }
+
+  .header-cta { min-height: 44px; padding-inline: 18px; font-size: .95rem; }
+
+  .menu-toggle {
+    display: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--navy);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .menu-icon { position: relative; width: 18px; height: 12px; }
+  .menu-icon i {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--white);
+    transition: transform var(--t-base) var(--ease-out), top var(--t-base) var(--ease-out);
+  }
+  .menu-icon i:first-child { top: 1px; }
+  .menu-icon i:last-child { top: 9px; }
+  [aria-expanded='true'] .menu-icon i:first-child { top: 5px; transform: rotate(45deg); }
+  [aria-expanded='true'] .menu-icon i:last-child { top: 5px; transform: rotate(-45deg); }
+
+  .mobile-menu {
+    pointer-events: auto;
+    position: fixed;
+    inset: 84px 12px auto;
+    max-height: calc(100svh - 96px);
+    overflow-y: auto;
+    padding: var(--s-2) var(--s-3) var(--s-3);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background: var(--paper);
+    box-shadow: 0 30px 60px rgb(60 40 0 / 18%);
+    opacity: 0;
+    transform: translateY(-10px) scale(.98);
+    transform-origin: top center;
+    transition: opacity var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out);
+  }
+  .mobile-menu.is-open { opacity: 1; transform: none; }
+  .mobile-menu ul { margin: 0 0 var(--s-3); padding: 0; list-style: none; }
+  .mobile-menu li + li { border-top: 1px dashed var(--border); }
+  .mobile-menu a:not(.btn) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 60px;
+    color: var(--text);
+    font: 700 1.35rem/1.2 var(--font-display);
+    letter-spacing: -.02em;
+    text-decoration: none;
+  }
+  .mobile-menu a .arrow { color: var(--text-muted); font-weight: 400; }
+  .mobile-menu a[aria-current='page'] span:first-child { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--accent-ink); }
+  .mobile-menu.is-open li { animation: item-in .4s var(--ease-out) both; animation-delay: calc(var(--i) * 50ms); }
+  .mobile-cta { width: 100%; }
+
+  @keyframes item-in { from { opacity: 0; transform: translateY(8px); } }
+
+  @media (max-width: 1020px) {
+    .nav-desktop, .header-cta { display: none; }
+    .menu-toggle { display: grid; }
+    .header-bar { padding-left: 16px; }
+  }
+  @media (max-width: 359px) {
+    .brand img { height: 24px; }
+  }
+  @media (min-width: 1021px) {
+    .mobile-menu { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu, .menu-icon i { transition: none; }
+    .mobile-menu.is-open li { animation: none; }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const label = document.querySelector<HTMLElement>('[data-menu-label]');
+
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const setOpen = (open: boolean) => {
+    if (!toggle || !menu) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (label) label.textContent = open ? 'Close menu' : 'Open menu';
+    document.body.classList.toggle('menu-open', open);
+    if (open) {
+      menu.hidden = false;
+      requestAnimationFrame(() => menu.classList.add('is-open'));
+    } else {
+      menu.classList.remove('is-open');
+      menu.hidden = true;
+    }
+  };
+
+  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (toggle?.getAttribute('aria-expanded') !== 'true') return;
+    const t = e.target as Node;
+    if (!menu?.contains(t) && !toggle.contains(t)) setOpen(false);
+  });
+  window.matchMedia('(min-width: 1021px)').addEventListener('change', (e) => e.matches && setOpen(false));
+</script>

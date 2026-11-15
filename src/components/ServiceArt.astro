@@ -1,0 +1,144 @@
+---
+// Small drawn illustrations for each service. No photos, no client work.
+interface Props {
+  kind: 'websites' | 'web-apps' | 'ai' | 'marketing' | 'content';
+}
+const { kind } = Astro.props;
+---
+
+<div class:list={['art', kind]} aria-hidden="true">
+  {kind === 'websites' && (
+    <div class="browser">
+      <div class="bar"><i></i><i></i><i></i><span></span></div>
+      <div class="page">
+        <span class="hero-block"></span>
+        <span class="line w80"></span><span class="line w60"></span>
+        <div class="tiles"><span></span><span></span><span></span></div>
+        <span class="wa-btn">Chat on WhatsApp</span>
+      </div>
+    </div>
+  )}
+  {kind === 'web-apps' && (
+    <div class="dash">
+      <div class="side"><i></i><i></i><i></i><i></i></div>
+      <div class="main">
+        <div class="kpis"><span><b>128</b>orders</span><span><b>₹</b>paid</span><span><b>0</b>queue</span></div>
+        <div class="rows">
+          <span class="row"><i></i>Order #2041<em>Ready</em></span>
+          <span class="row"><i></i>Order #2042<em>Printing</em></span>
+          <span class="row"><i></i>Order #2043<em>Paid</em></span>
+        </div>
+      </div>
+    </div>
+  )}
+  {kind === 'ai' && (
+    <div class="chat">
+      <span class="msg them">What courses do you have for beginners?</span>
+      <span class="msg us">We have a 6-week starter path. Want me to book a free demo class?</span>
+      <span class="msg them short">Yes, Saturday works.</span>
+      <span class="typing"><i></i><i></i><i></i></span>
+    </div>
+  )}
+  {kind === 'marketing' && (
+    <div class="chart">
+      <span class="pill">Top 3 on Google</span>
+      <svg viewBox="0 0 300 150" preserveAspectRatio="none">
+        <path class="area" d="M0 140 L0 120 C40 115 60 110 90 96 S150 80 180 62 S240 30 300 14 L300 140 Z" />
+        <path class="line-path" d="M0 120 C40 115 60 110 90 96 S150 80 180 62 S240 30 300 14" />
+      </svg>
+      <div class="axis"><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span></div>
+    </div>
+  )}
+  {kind === 'content' && (
+    <div class="reels">
+      {[0, 1, 2].map((n) => (
+        <div class:list={['reel', `r${n}`]}><span class="play"></span><span class="l"></span><span class="l s"></span></div>
+      ))}
+    </div>
+  )}
+</div>
+
+<style>
+  .art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 100%;
+    min-height: 240px;
+    padding: 8%;
+    overflow: hidden;
+    border-radius: 20px;
+    background:
+      radial-gradient(circle at 20% 10%, rgb(255 176 32 / 30%), transparent 55%),
+      radial-gradient(circle at 90% 95%, rgb(53 99 255 / 14%), transparent 50%),
+      var(--cream-2);
+  }
+  .art > * { width: 100%; max-width: 420px; }
+
+  /* Website */
+  .browser { overflow: hidden; border-radius: 14px; background: #fff; box-shadow: 0 20px 40px rgb(11 31 58 / 16%); }
+  .bar { display: flex; align-items: center; gap: 5px; padding: 8px 10px; border-bottom: 1px solid #eee; }
+  .bar i { width: 8px; height: 8px; border-radius: 50%; background: #ff6b5e; }
+  .bar i:nth-child(2) { background: #ffbd2e; } .bar i:nth-child(3) { background: #28c840; }
+  .bar span { flex: 1; height: 10px; margin-left: 8px; border-radius: 5px; background: var(--cream); }
+  .page { display: grid; gap: 8px; padding: 14px; }
+  .hero-block { height: 70px; border-radius: 10px; background: linear-gradient(120deg, var(--navy), var(--navy-3)); }
+  .line { height: 8px; border-radius: 4px; background: #e9e2cf; }
+  .w80 { width: 80%; } .w60 { width: 60%; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .tiles span { height: 34px; border-radius: 8px; background: var(--cream); }
+  .wa-btn { justify-self: start; padding: 6px 12px; border-radius: 999px; background: #25d366; color: #fff; font: 700 .7rem var(--font-display); animation: ping-btn 2.6s ease-in-out infinite; }
+
+  /* Web app */
+  .dash { display: grid; grid-template-columns: 44px 1fr; overflow: hidden; border-radius: 14px; background: #fff; box-shadow: 0 20px 40px rgb(11 31 58 / 16%); }
+  .side { display: grid; align-content: start; gap: 10px; padding: 12px 10px; background: var(--navy); }
+  .side i { height: 24px; border-radius: 6px; background: rgb(255 255 255 / 14%); }
+  .side i:first-child { background: var(--saffron); }
+  .main { display: grid; gap: 10px; padding: 12px; }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .kpis span { display: grid; padding: 8px; border-radius: 8px; background: var(--cream); color: #56606e; font-size: .62rem; }
+  .kpis b { color: var(--navy); font: 800 1rem var(--font-display); }
+  .rows { display: grid; gap: 6px; }
+  .row { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border: 1px solid #eee; border-radius: 8px; color: var(--navy); font-size: .68rem; font-weight: 600; animation: slide-in .6s var(--ease-out) both; }
+  .row:nth-child(2) { animation-delay: .15s; } .row:nth-child(3) { animation-delay: .3s; }
+  .row i { width: 8px; height: 8px; border-radius: 50%; background: #28c840; }
+  .row em { margin-left: auto; padding: 2px 8px; border-radius: 999px; background: rgb(255 176 32 / 22%); font-style: normal; font-size: .6rem; }
+
+  /* AI chat */
+  .chat { display: grid; gap: 10px; padding: 16px; border-radius: 16px; background: #fff; box-shadow: 0 20px 40px rgb(11 31 58 / 16%); }
+  .msg { max-width: 82%; padding: 9px 12px; border-radius: 14px; font-size: .74rem; line-height: 1.4; animation: pop .5s var(--ease-out) both; }
+  .them { justify-self: start; background: var(--cream); color: var(--navy); border-bottom-left-radius: 4px; }
+  .us { justify-self: end; background: var(--navy); color: #fff; border-bottom-right-radius: 4px; animation-delay: .25s; }
+  .short { animation-delay: .5s; }
+  .typing { justify-self: end; display: flex; gap: 4px; padding: 10px 12px; border-radius: 14px; background: var(--navy); }
+  .typing i { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: blink 1.2s infinite; }
+  .typing i:nth-child(2) { animation-delay: .2s; } .typing i:nth-child(3) { animation-delay: .4s; }
+
+  /* Marketing */
+  .chart { position: relative; padding: 18px 16px 12px; border-radius: 16px; background: #fff; box-shadow: 0 20px 40px rgb(11 31 58 / 16%); }
+  .chart svg { width: 100%; height: 140px; overflow: visible; }
+  .area { fill: rgb(255 176 32 / 18%); }
+  .line-path { fill: none; stroke: var(--navy); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 1.6s var(--ease-out) forwards; }
+  .pill { position: absolute; top: 12px; right: 12px; padding: 5px 10px; border-radius: 999px; background: var(--saffron); color: var(--navy); font: 700 .66rem var(--font-display); }
+  .axis { display: flex; justify-content: space-between; color: #8a93a0; font-size: .62rem; }
+
+  /* Content */
+  .reels { display: flex; justify-content: center; gap: 5%; height: 220px; }
+  .reel { position: relative; flex: 0 1 28%; display: grid; align-content: end; gap: 5px; padding: 10% 9%; border-radius: 16px; background: linear-gradient(180deg, #2a4a78, #13294a); box-shadow: 0 16px 30px rgb(11 31 58 / 22%); }
+  .reel.r1 { translate: 0 -10%; background: linear-gradient(180deg, #ff8a5c, #c4443a); }
+  .reel.r2 { background: linear-gradient(180deg, #ffc857, #d9852a); }
+  .play { position: absolute; top: 45%; left: 50%; translate: -50% -50%; width: 34%; aspect-ratio: 1; border-radius: 50%; background: rgb(255 255 255 / 88%); }
+  .l { height: 5px; border-radius: 5px; background: rgb(255 255 255 / 70%); }
+  .l.s { width: 60%; }
+
+  @keyframes ping-btn { 50% { box-shadow: 0 0 0 6px rgb(37 211 102 / 25%); } }
+  @keyframes slide-in { from { opacity: 0; transform: translateX(-12px); } }
+  @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.96); } }
+  @keyframes blink { 50% { opacity: .25; } }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wa-btn, .row, .msg, .typing i { animation: none; }
+    .line-path { animation: none; stroke-dashoffset: 0; }
+  }
+</style>

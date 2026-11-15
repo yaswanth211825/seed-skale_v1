@@ -1,0 +1,27 @@
+---
+interface Props {
+  label: string;
+  title: string;
+  lede?: string;
+}
+const { label, title, lede } = Astro.props;
+---
+
+<section class="page-intro">
+  <div class="container">
+    <p class="label">{label}</p>
+    <h1>{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-intro {
+    padding-block: clamp(56px, 8vw, 112px) clamp(48px, 6vw, 80px);
+    border-bottom: 1px solid var(--border);
+  }
+  .container { display: grid; gap: var(--s-2); }
+  h1 { font-size: var(--fs-h1); max-width: 20ch; }
+  .lede { max-width: 60ch; color: var(--text-muted); font-size: 1.125rem; }
+</style>

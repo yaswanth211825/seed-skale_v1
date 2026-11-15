@@ -1,0 +1,206 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+import { site, socials } from '../data/site';
+
+const live = socials.filter((s) => s.external && s.id !== 'whatsapp');
+---
+
+<BaseLayout
+  title="Coming soon | SkaleSeed"
+  description="New SkaleSeed channels are on the way. Leave your email and phone number and we will tell you when they go live."
+  noindex
+>
+  <section class="soon dark panel">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="container soon-inner">
+      <p class="pill" data-network-pill>New channel</p>
+      <h1>We will be <span>coming soon.</span><br />Stay tuned.</h1>
+      <p class="lede" data-network-text>
+        This channel is still being set up. Leave your details and we will let you know the moment it goes live.
+      </p>
+
+      <form class="signup" action={site.formEndpoint} method="POST" data-signup novalidate>
+        <input type="hidden" name="_subject" value="Coming soon signup" />
+        <input type="hidden" name="channel" value="" data-channel />
+        <div class="field">
+          <label for="cs-email">Email address</label>
+          <input id="cs-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" />
+          <small class="error" id="cs-email-error"></small>
+        </div>
+        <div class="field">
+          <label for="cs-phone">Phone number</label>
+          <input id="cs-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="+91 98XXX XXXXX" />
+          <small class="error" id="cs-phone-error"></small>
+        </div>
+        <button class="btn btn-primary" type="submit" data-submit>Notify me</button>
+        <p class="status" role="status" aria-live="polite" data-status></p>
+      </form>
+
+      <div class="success" data-success hidden>
+        <p class="tick" aria-hidden="true">✓</p>
+        <h2>You're on the list.</h2>
+        <p>We'll message you as soon as it is live. Meanwhile, you can find us here:</p>
+      </div>
+
+      <ul class="live">
+        {live.map((s) => (
+          <li>
+            <a href={s.href} {...(s.external ? { target: '_blank', rel: 'noopener' } : {})}>
+              <SocialIcon id={s.id} />{s.label}
+            </a>
+          </li>
+        ))}
+        <li><a href="/">Back to home</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .soon {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    align-items: center;
+    min-height: calc(100svh - var(--header-h));
+    padding-block: var(--s-8);
+  }
+  .glow {
+    position: absolute;
+    inset: auto -20% -40% auto;
+    width: min(720px, 120vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(255 176 32 / 18%), transparent 62%);
+    pointer-events: none;
+  }
+  .soon-inner { position: relative; display: grid; justify-items: start; gap: var(--s-3); max-width: 640px; }
+  .pill {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 8%);
+    color: var(--saffron);
+    font: 600 var(--fs-small) / 1.4 var(--font-display);
+  }
+  h1 { font-size: var(--fs-h1); line-height: 1.08; }
+  h1 span { color: var(--saffron); }
+  .lede { color: var(--text-muted); font-size: 1.125rem; max-width: 46ch; }
+
+  .signup {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-2);
+    width: 100%;
+    margin-top: var(--s-1);
+    padding: var(--s-3);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    background: var(--surface);
+  }
+  .field { display: grid; gap: 6px; }
+  label { font-weight: 500; font-size: .95rem; }
+  input {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-control);
+    background: var(--field);
+    color: var(--text);
+    font: inherit;
+    font-size: 1rem;
+    transition: border-color var(--t-fast) var(--ease-out);
+  }
+  input::placeholder { color: rgb(185 198 214 / 70%); }
+  input:focus { outline: none; border-color: var(--saffron); }
+  input[aria-invalid='true'] { border-color: var(--coral); }
+  .error { min-height: 1.2em; color: var(--coral); font-size: var(--fs-small); }
+  .signup .btn { grid-column: 1 / -1; width: 100%; min-height: 52px; }
+  .status { grid-column: 1 / -1; min-height: 1.4em; color: var(--text-muted); font-size: var(--fs-small); text-align: center; }
+
+  .success { display: grid; gap: var(--s-1); width: 100%; padding: var(--s-4); border-radius: var(--r-card); background: var(--surface); border: 1px solid rgb(255 176 32 / 40%); animation: pop var(--t-base) var(--ease-out); }
+  .success h2 { font-size: var(--fs-h3); }
+  .success p { color: var(--text-muted); }
+  .tick { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--saffron); color: var(--navy) !important; font-weight: 700; }
+
+  .live { display: flex; flex-wrap: wrap; gap: var(--s-1); margin: 0; padding: 0; list-style: none; }
+  .live a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+  }
+  .live a:hover { color: var(--text); border-color: var(--border-strong); }
+
+  @keyframes pop { from { opacity: 0; transform: translateY(8px); } }
+  @media (max-width: 560px) {
+    .signup { grid-template-columns: 1fr; padding: var(--s-2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .success { animation: none; }
+  }
+</style>
+
+<script>
+  const names: Record<string, string> = { linkedin: 'LinkedIn', youtube: 'YouTube', x: 'X', facebook: 'Facebook' };
+  const key = new URLSearchParams(location.search).get('on') ?? '';
+  const network = names[key];
+
+  const pill = document.querySelector<HTMLElement>('[data-network-pill]');
+  const text = document.querySelector<HTMLElement>('[data-network-text]');
+  const channel = document.querySelector<HTMLInputElement>('[data-channel]');
+  if (network) {
+    if (pill) pill.textContent = `SkaleSeed on ${network}`;
+    if (text) text.textContent = `Our ${network} page is still being set up. Leave your details and we will let you know the moment it goes live.`;
+    if (channel) channel.value = network;
+  }
+
+  const form = document.querySelector<HTMLFormElement>('[data-signup]');
+  const status = document.querySelector<HTMLElement>('[data-status]');
+  const success = document.querySelector<HTMLElement>('[data-success]');
+  const submit = document.querySelector<HTMLButtonElement>('[data-submit]');
+
+  const rules = {
+    email: { test: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v), message: 'Enter a valid email address.' },
+    phone: { test: (v: string) => v.replace(/\D/g, '').length >= 10, message: 'Enter a phone number with at least 10 digits.' },
+  };
+
+  const check = (name: keyof typeof rules) => {
+    const input = form?.elements.namedItem(name) as HTMLInputElement;
+    const error = document.getElementById(`cs-${name}-error`);
+    const ok = rules[name].test(input.value.trim());
+    input.setAttribute('aria-invalid', String(!ok));
+    if (!ok) input.setAttribute('aria-describedby', `cs-${name}-error`);
+    if (error) error.textContent = ok ? '' : rules[name].message;
+    return ok;
+  };
+
+  (['email', 'phone'] as const).forEach((name) => {
+    const input = form?.elements.namedItem(name) as HTMLInputElement | null;
+    input?.addEventListener('blur', () => input.value && check(name));
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const valid = [check('email'), check('phone')].every(Boolean);
+    if (!valid) return;
+    if (submit) submit.disabled = true;
+    if (status) status.textContent = 'Saving your details…';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(String(res.status));
+      form.hidden = true;
+      if (success) success.hidden = false;
+    } catch {
+      if (status) status.textContent = 'That did not go through. Please try again, or message us on WhatsApp.';
+      if (submit) submit.disabled = false;
+    }
+  });
+</script>

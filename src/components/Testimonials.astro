@@ -1,0 +1,172 @@
+---
+import testimonials from '../data/testimonials.json';
+
+interface Props {
+  title?: string;
+}
+const { title } = Astro.props;
+
+// One palette colour per card, cycling through the brand colours.
+const tones = [
+  { bg: 'var(--navy)', fg: 'var(--saffron)' },
+  { bg: 'var(--saffron)', fg: 'var(--navy)' },
+  { bg: 'var(--blue)', fg: '#fff' },
+  { bg: 'var(--coral)', fg: '#fff' },
+  { bg: 'var(--navy-3)', fg: '#fff' },
+  { bg: '#2e8b57', fg: '#fff' },
+];
+---
+
+<section class="section testimonials" id="feedback" aria-labelledby="feedback-title">
+  <div class="container">
+    <div class="section-head center" data-reveal>
+      <p class="label">Client feedback</p>
+      <h2 id="feedback-title">{title ?? 'In their words.'} <em>Not ours.</em></h2>
+      <p>What the businesses we build for tell us after launch. Scroll to deal the deck.</p>
+    </div>
+
+    <ul class="wall" data-deck>
+      {testimonials.map((t, i) => (
+        <li class="card" data-card data-draft={t.draft ? 'true' : undefined}>
+          <a class="card-link" href={`/work/${t.project}`} aria-label={`${t.company}: read the project story`}>
+            <p class="quote">{t.quote}</p>
+            <div class="who">
+              <span class="mark" aria-hidden="true" style={`--bg:${tones[i % tones.length].bg};--fg:${tones[i % tones.length].fg}`}>
+                {t.company.charAt(0)}
+              </span>
+              <span class="meta">
+                <strong>{t.company}</strong>
+                <small>{t.sector}</small>
+              </span>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .testimonials { background: linear-gradient(180deg, var(--cream) 0, var(--cream-2) 120px, var(--cream-2) calc(100% - 120px), var(--cream) 100%); overflow: clip; }
+  .card { will-change: transform; }
+
+  /* Masonry: 1 column on phones, 2 on tablets, 3 on desktop */
+  .wall { columns: 3 300px; column-gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
+  .card { break-inside: avoid; margin-bottom: var(--s-3); }
+
+  .card-link {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    color: inherit;
+    text-decoration: none;
+    transition: transform var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (hover: hover) {
+    .card-link:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgb(60 40 0 / 12%); border-color: var(--border-strong); }
+  }
+  .card-link:active { transform: scale(.98); }
+
+  .quote { position: relative; font-size: 1.125rem; line-height: 1.55; color: var(--text); }
+  .quote::before {
+    content: '“';
+    display: block;
+    height: .5em;
+    margin-bottom: 4px;
+    font: italic 400 3.2rem/1 var(--font-serif);
+    color: var(--em);
+  }
+
+  .who { display: flex; align-items: center; gap: 12px; padding-top: var(--s-2); border-top: 1px dashed var(--border); }
+  .mark {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 800 1.2rem var(--font-display);
+  }
+  .meta { display: grid; }
+  .meta strong { font-family: var(--font-display); font-weight: 700; }
+  .meta small { color: var(--text-muted); font-size: var(--fs-small); }
+
+  @media (max-width: 640px) {
+    .wall { columns: 1; }
+    .card-link { padding: var(--s-3); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-link { transition: none; }
+    .card-link:hover, .card-link:active { transform: none; }
+  }
+</style>
+
+<script>
+  // Feedback deck: cards start stacked like a pack of cards and deal out into the wall.
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const deck = document.querySelector<HTMLElement>('[data-deck]');
+  if (deck && !still) {
+    Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([{ gsap }, { ScrollTrigger }]) => {
+      gsap.registerPlugin(ScrollTrigger);
+      const cards = Array.from(deck.querySelectorAll<HTMLElement>('[data-card]'));
+      const tilt = [-7, 5, -3, 8, -5, 3];
+      const mm = gsap.matchMedia();
+
+      // Desktop and tablet: the wall pins in the middle of the screen while the deck deals out.
+      mm.add('(min-width: 768px)', () => {
+        const toDeck = () => {
+          const box = deck.getBoundingClientRect();
+          const cx = box.left + box.width / 2;
+          const cy = box.top + box.height / 2;
+          return cards.map((c) => {
+            const r = c.getBoundingClientRect();
+            return { x: cx - (r.left + r.width / 2), y: cy - (r.top + r.height / 2) };
+          });
+        };
+        let offsets = toDeck();
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: deck,
+            start: 'center center',
+            end: '+=110%',
+            pin: true,
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            onRefreshInit: () => {
+              gsap.set(cards, { clearProps: 'transform' });
+              offsets = toDeck();
+            },
+          },
+        });
+        tl.from(cards, {
+          x: (i) => offsets[i].x,
+          y: (i) => offsets[i].y,
+          rotation: (i) => tilt[i % tilt.length],
+          scale: 0.86,
+          ease: 'power2.out',
+          stagger: 0.12,
+        });
+      });
+
+      // Phones: each card is dealt in from the side as it arrives.
+      mm.add('(max-width: 767px)', () => {
+        cards.forEach((c, i) => {
+          gsap.from(c, {
+            x: i % 2 ? 60 : -60,
+            rotation: tilt[i % tilt.length],
+            opacity: 0,
+            ease: 'none',
+            scrollTrigger: { trigger: c, start: 'top 95%', end: 'top 70%', scrub: 0.5 },
+          });
+        });
+      });
+    });
+  }
+</script>
