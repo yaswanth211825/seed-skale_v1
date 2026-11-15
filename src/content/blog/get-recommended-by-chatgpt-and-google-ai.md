@@ -51,4 +51,4 @@ A short post that answers a real customer question gives assistants something to
 
 ## Want to see it in action?
 
-Use our [Ask AI](/ask-ai) page to ask ChatGPT, Claude, Gemini or Perplexity about SkaleSeed and see what they say. When you are ready, [get a free demo](/contact) of what we would build for you.
+Use our [Ask AI](/ask-ai) page to ask ChatGPT, Claude or Perplexity about SkaleSeed and see what they say. When you are ready, [get a free demo](/contact) of what we would build for you.

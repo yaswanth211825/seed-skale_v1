@@ -1,6 +1,8 @@
 @import './tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; }
+/* hidden always wins over component display rules */
+[hidden] { display: none !important; }
 
 html {
   -webkit-text-size-adjust: 100%;
@@ -183,3 +185,68 @@ button { font: inherit; color: inherit; }
    Keeps first load calm and fast, and saves battery. */
 html:not(.motion-on) [data-loop], html:not(.motion-on) [data-loop] *,
 [data-loop][data-paused], [data-loop][data-paused] * { animation-play-state: paused !important; }
+
+/* ---------- Forms (shared by Contact and Coming soon) ---------- */
+.form-card {
+  display: grid;
+  gap: var(--s-3);
+  padding: clamp(20px, 4vw, 36px);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+}
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+.f-field { display: grid; gap: 6px; min-width: 0; }
+.f-label { font-weight: 600; font-size: .95rem; color: var(--text); }
+.f-label small { font-weight: 400; color: var(--text-muted); }
+.f-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 13px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: var(--white);
+  color: var(--navy);
+  font: inherit;
+  font-size: 1rem;
+  transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+textarea.f-input { min-height: 120px; resize: vertical; }
+.f-input::placeholder { color: #8b919b; }
+.f-input:hover { border-color: var(--border-strong); }
+.f-input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 4px rgb(255 176 32 / 35%); }
+.f-input[aria-invalid='true'] { border-color: #b42318; box-shadow: 0 0 0 4px rgb(180 35 24 / 12%); }
+.f-error { min-height: 1.25em; color: #b42318; font-size: .85rem; font-weight: 500; }
+.f-error:empty { min-height: 0; }
+.f-status { min-height: 1.4em; color: #b42318; font-size: .9rem; text-align: center; }
+.f-status a { color: inherit; font-weight: 700; }
+.f-trap { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.f-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; border: 0; }
+.f-chips legend { margin-bottom: 8px; padding: 0; }
+.f-chip { position: relative; }
+.f-chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.f-chip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--text);
+  font-weight: 600;
+  font-size: .925rem;
+  transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.f-chip input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+.f-chip input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: 2px; }
+.form-card .btn[type='submit'] { width: 100%; min-height: 54px; }
+.form-card .btn[aria-busy='true'] { opacity: .75; cursor: progress; }
+.f-success { display: grid; justify-items: start; gap: var(--s-2); padding: clamp(24px, 4vw, 40px); border-radius: 28px; background: var(--navy); color: #fff; outline: none; }
+.f-success h2, .f-success h3 { color: #fff; font-size: var(--fs-h3); }
+.f-success p { color: #c8d3e1; }
+.f-tick { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--saffron); color: var(--navy); font-size: 1.4rem; font-weight: 800; animation: pop-in var(--dur-2) var(--ease); }
+@keyframes pop-in { from { transform: scale(.4); opacity: 0; } }
+@media (max-width: 560px) { .f-row { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .f-tick { animation: none; } }

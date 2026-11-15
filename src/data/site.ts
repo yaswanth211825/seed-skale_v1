@@ -27,7 +27,7 @@ export type SocialId = 'whatsapp' | 'instagram' | 'email' | 'linkedin' | 'youtub
 /** Live profiles link out; the rest open the coming-soon page for that network. */
 export const socials: { id: SocialId; label: string; href: string; external: boolean }[] = [
   { id: 'whatsapp', label: 'WhatsApp', href: whatsappLink(), external: true },
-  { id: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/skalewith.rohith', external: true },
+  { id: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/skaleseed', external: true },
   { id: 'email', label: 'Email', href: `mailto:${site.email}`, external: false },
   { id: 'linkedin', label: 'LinkedIn', href: '/coming-soon?on=linkedin', external: false },
   { id: 'youtube', label: 'YouTube', href: '/coming-soon?on=youtube', external: false },

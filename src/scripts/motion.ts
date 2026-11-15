@@ -135,4 +135,7 @@ async function start() {
   void DUR_3;
 }
 
-start();
+// Start once the browser is idle, so animation setup never competes with the first paint.
+const whenIdle = (fn: () => void) =>
+  'requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 200);
+whenIdle(() => void start());

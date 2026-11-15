@@ -11,9 +11,7 @@ const needs = ['a website', 'a web app or SaaS', 'Meta ads and SEO', 'Instagram 
 const engines = [
   { id: 'chatgpt', label: 'ChatGPT', color: '#10a37f' },
   { id: 'claude', label: 'Claude', color: '#d97757' },
-  { id: 'gemini', label: 'Gemini', color: '#4f7cff' },
   { id: 'perplexity', label: 'Perplexity', color: '#20b8cd' },
-  { id: 'google', label: 'Google AI Mode', color: '#fbbc04' },
 ];
 ---
 
@@ -119,7 +117,7 @@ const engines = [
   .field input::placeholder { color: rgb(185 198 214 / 65%); }
   .field input:focus { outline: none; border-color: var(--saffron); }
 
-  .engines { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--s-1); }
+  .engines { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-1); }
   .engine {
     display: flex;
     align-items: center;
@@ -168,7 +166,7 @@ const engines = [
 </style>
 
 <script>
-  type Engine = 'chatgpt' | 'claude' | 'gemini' | 'perplexity' | 'google';
+  type Engine = 'chatgpt' | 'claude' | 'perplexity';
 
   document.querySelectorAll<HTMLElement>('[data-ask]').forEach((card) => {
     const url = card.dataset.site!;
@@ -197,8 +195,6 @@ const engines = [
       chatgpt: (q) => `https://chatgpt.com/?hints=search&q=${encodeURIComponent(q)}`,
       claude: (q) => `https://claude.ai/new?q=${encodeURIComponent(q)}`,
       perplexity: (q) => `https://www.perplexity.ai/search?q=${encodeURIComponent(q)}`,
-      google: (q) => `https://www.google.com/search?udm=50&q=${encodeURIComponent(q)}`,
-      gemini: () => 'https://gemini.google.com/app',
     };
 
     const say = (msg: string) => {
@@ -219,11 +215,6 @@ const engines = [
       btn.addEventListener('click', async () => {
         const engine = btn.dataset.engine as Engine;
         const prompt = buildPrompt();
-        // Gemini has no official prefill link, so copy the question for pasting.
-        if (engine === 'gemini') {
-          const ok = await copy(prompt);
-          say(ok ? 'Question copied. Paste it into Gemini.' : 'Open "See the question we send", copy it, then paste it into Gemini.');
-        }
         window.open(links[engine](prompt), '_blank', 'noopener');
       });
     });
