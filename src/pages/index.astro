@@ -6,17 +6,18 @@ import ServiceArt from '../components/ServiceArt.astro';
 import WorkGrid from '../components/WorkGrid.astro';
 import AskAITeaser from '../components/AskAITeaser.astro';
 import HeroMockup from '../components/HeroMockup.astro';
+import Icon from '../components/Icon.astro';
 import { cta } from '../data/site';
 import { steps } from '../data/services';
 import { projects } from '../data/projects';
 
 
 const system = [
-  { n: '01', kind: 'websites' as const, title: 'Websites', tag: 'your digital home', text: 'A fast, beautiful site that shows your work and sends enquiries straight to WhatsApp.', href: '/services#websites', icon: 'M4 6h16v12H4z M4 9h16' },
-  { n: '02', kind: 'web-apps' as const, title: 'Web apps', tag: 'run it online', text: 'Ordering, booking and dashboards that take the queues and paperwork out of your day.', href: '/services#web-apps', icon: 'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z' },
-  { n: '03', kind: 'ai' as const, title: 'AI assistants', tag: 'answer instantly', text: 'An assistant that answers customers in their own language, even when you are busy.', href: '/services#ai', icon: 'M5 5h14v10H9l-4 4z M9 10h.01 M12 10h.01 M15 10h.01' },
-  { n: '04', kind: 'marketing' as const, title: 'Marketing & SEO', tag: 'get discovered', text: 'Meta ads and SEO that bring the right people to your door, from Google and from AI search.', href: '/services#marketing', icon: 'M4 19V9 M10 19V5 M16 19v-7 M22 19H2' },
-  { n: '05', kind: 'content' as const, title: 'Content', tag: 'stay memorable', text: 'Reels and posts planned, shot and edited, so people remember you after the scroll.', href: '/services#content', icon: 'M6 4h12v16H6z M10 9l5 3-5 3z' },
+  { n: '01', kind: 'websites' as const, title: 'Websites', tag: 'your digital home', text: 'A fast, beautiful site that shows your work and sends enquiries straight to WhatsApp.', href: '/services#websites', icon: 'browser' },
+  { n: '02', kind: 'web-apps' as const, title: 'Web apps', tag: 'run it online', text: 'Ordering, booking and dashboards that take the queues and paperwork out of your day.', href: '/services#web-apps', icon: 'squares-four' },
+  { n: '03', kind: 'ai' as const, title: 'AI assistants', tag: 'answer instantly', text: 'An assistant that answers customers in their own language, even when you are busy.', href: '/services#ai', icon: 'chat-teardrop-dots' },
+  { n: '04', kind: 'marketing' as const, title: 'Marketing & SEO', tag: 'get discovered', text: 'Meta ads and SEO that bring the right people to your door, from Google and from AI search.', href: '/services#marketing', icon: 'chart-line-up' },
+  { n: '05', kind: 'content' as const, title: 'Content', tag: 'stay memorable', text: 'Reels and posts planned, shot and edited, so people remember you after the scroll.', href: '/services#content', icon: 'film-slate' },
 ];
 
 const statement = 'People decide in seconds whether to call you. We make those seconds count, on Google, on WhatsApp and on your own site.';
@@ -98,7 +99,7 @@ const statement = 'People decide in seconds whether to call you. We make those s
               <div class="stack-copy">
                 <span class="svc-top">
                   <span class="svc-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon} /></svg>
+                    <Icon name={s.icon} size={26} />
                   </span>
                   <span class="svc-n">{s.n} / 05</span>
                 </span>

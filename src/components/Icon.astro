@@ -1,0 +1,39 @@
+---
+// Phosphor icons (phosphoricons.com, MIT), inlined at build time so pages load nothing extra.
+// Duotone: the solid outline uses currentColor; the soft second layer takes --icon-duo
+// (defaults to a tint of currentColor), so icons can be two-coloured.
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+
+interface Props {
+  name: string;
+  size?: number;
+  weight?: 'duotone' | 'fill' | 'bold' | 'regular';
+  class?: string;
+}
+const { name, size = 24, weight = 'duotone', class: cls } = Astro.props;
+
+const require = createRequire(import.meta.url);
+const file = require.resolve(`@phosphor-icons/core/assets/${weight}/${name}${weight === 'regular' ? '' : `-${weight}`}.svg`);
+const body = readFileSync(file, 'utf8')
+  .replace(/^<svg[^>]*>/, '')
+  .replace(/<\/svg>\s*$/, '')
+  .replace(/opacity="0\.2"/g, 'class="duo"');
+---
+
+<svg
+  class:list={['icon', cls]}
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 256 256"
+  width={size}
+  height={size}
+  fill="currentColor"
+  aria-hidden="true"
+  focusable="false"
+  set:html={body}
+/>
+
+<style>
+  .icon { flex: none; }
+  .icon :global(.duo) { fill: var(--icon-duo, currentColor); opacity: var(--icon-duo-opacity, .25); }
+</style>

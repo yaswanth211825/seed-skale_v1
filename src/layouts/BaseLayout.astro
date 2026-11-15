@@ -33,6 +33,7 @@ const jsonLd = [organizationSchema, websiteSchema, ...schema];
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="SkaleSeed Field Notes" href="/rss.xml" />
     {noindex ? <meta name="robots" content="noindex, follow" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
     <meta name="theme-color" content="#fbf6ea" />
     <meta name="format-detection" content="telephone=no" />

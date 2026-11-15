@@ -3,18 +3,39 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import AskAITeaser from '../../components/AskAITeaser.astro';
-import { site } from '../../data/site';
+import Icon from '../../components/Icon.astro';
+import { site, whatsappLink } from '../../data/site';
+import { sortPosts, themeFor, iconFor, minutes, stepCount, fmtDate } from '../../data/blog';
+import { slug as toSlug } from '../../plugins/rehype-blog.mjs';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, others: posts.filter((p) => p.id !== post.id).slice(0, 2) },
+  }));
 }
 
-const { post } = Astro.props;
+const { post, others } = Astro.props;
 const { Content } = await render(post);
 const url = new URL(`/blog/${post.id}`, site.url).href;
-const fmt = (d: Date) => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-const minutes = Math.max(1, Math.round((post.body ?? '').split(/\s+/).length / 220));
+const th = themeFor(post);
+const body = post.body ?? '';
+const steps = stepCount(body);
+const words = body.split(/\s+/).length;
+
+// Table of contents from the markdown h2s, using the same ids the build plugin writes.
+const toc = [...body.matchAll(/^##\s+(.+)$/gm)].map(([, raw]) => {
+  const m = raw.match(/^Step\s+(\d+)\s*[:.-]\s*(.+)$/i);
+  return { id: toSlug(raw.trim()), step: m?.[1], text: (m?.[2] ?? raw).trim() };
+});
+
+const shareText = encodeURIComponent(`${post.data.title} ${url}`);
+const share = {
+  whatsapp: `https://wa.me/?text=${shareText}`,
+  linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+  x: `https://x.com/intent/post?text=${shareText}`,
+};
 
 const schema = [
   {
@@ -26,7 +47,11 @@ const schema = [
     dateModified: (post.data.updated ?? post.data.published).toISOString(),
     mainEntityOfPage: url,
     url,
+    image: `${site.url}/og-image.png`,
+    wordCount: words,
+    articleSection: post.data.tags[0],
     keywords: post.data.tags.join(', '),
+    inLanguage: 'en-IN',
     author: { '@type': 'Organization', name: site.name, url: site.url },
     publisher: { '@id': `${site.url}/#org` },
   },
@@ -43,70 +68,350 @@ const schema = [
 ---
 
 <BaseLayout title={`${post.data.title} | SkaleSeed`} description={post.data.description} schema={schema} type="article">
-  <article>
-    <header class="post-head">
-      <div class="container narrow">
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="/blog">Blog</a> <span aria-hidden="true">/</span> <span>{post.data.tags[0]}</span></nav>
-        <h1>{post.data.title}</h1>
+  <div class="read-progress" aria-hidden="true" style={`--pop:${th.pop}`}><span data-read-bar></span></div>
+
+  <article class="fn-article" style={`--bg:${th.bg};--pop:${th.pop}`} data-post={post.id}>
+    <header class="a-head">
+      <div class="a-head-card">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/blog">← Field Notes</a>
+          <span class="badge"><Icon name={iconFor(post)} weight="fill" size={14} />{post.data.tags[0]}</span>
+        </nav>
+        <h1 data-no-split>{post.data.title}</h1>
         <p class="lede">{post.data.description}</p>
-        <p class="meta">
-          <time datetime={post.data.published.toISOString()}>{fmt(post.data.published)}</time> · {minutes} min read · By the SkaleSeed team
-        </p>
+        <div class="a-meta">
+          <span><Icon name="calendar-blank" size={16} /><time datetime={post.data.published.toISOString()}>{fmtDate(post.data.published, 'long')}</time></span>
+          <span><Icon name="lightbulb" size={16} />{minutes(body)} min read</span>
+          {steps > 0 && <span><Icon name="list-checks" size={16} />{steps} steps</span>}
+          <span>By the SkaleSeed team</span>
+        </div>
+        {steps > 0 && <span class="big-steps" aria-hidden="true">{steps}<small>steps</small></span>}
       </div>
     </header>
-    <div class="section light prose-wrap">
-      <div class="container narrow prose">
+
+    <div class="a-body">
+      <aside class="toc" aria-label="In this guide">
+        <details class="toc-box" open data-toc>
+          <summary>
+            <span>In this guide</span>
+            {steps > 0 && <span class="toc-count" data-done-count>0 / {steps} done</span>}
+          </summary>
+          {steps > 0 && <div class="toc-meter" aria-hidden="true"><span data-done-bar></span></div>}
+          <ol>
+            {toc.map((h) => (
+              <li>
+                <a href={`#${h.id}`} data-toc-link={h.id}>
+                  <span class:list={['toc-n', { plain: !h.step }]} data-toc-check={h.step ? h.id : undefined}>{h.step ?? '✦'}</span>
+                  <span>{h.text}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <a class="toc-cta" href="/contact" data-cta="blog-toc">Want it done for you? <b>Free demo →</b></a>
+        </details>
+      </aside>
+
+      <div class="prose" data-prose>
         <Content />
-      </div>
-      <div class="container narrow after">
-        <AskAITeaser />
+
+        <div class="all-done" data-all-done hidden>
+          <span class="party" aria-hidden="true">🎉</span>
+          <div>
+            <p class="ad-title">You've ticked every step.</p>
+            <p>Want a second pair of eyes before you launch? We'll review it for free.</p>
+          </div>
+          <a class="mid-cta-btn" href="/contact" data-cta="blog-all-done">Get a free review →</a>
+        </div>
+
+        <footer class="a-foot">
+          <div class="share">
+            <p>Found this useful? Pass it on.</p>
+            <div class="share-row">
+              <a href={share.whatsapp} target="_blank" rel="noopener" aria-label="Share on WhatsApp"><Icon name="whatsapp-logo" weight="fill" size={18} /></a>
+              <a href={share.linkedin} target="_blank" rel="noopener" aria-label="Share on LinkedIn"><Icon name="linkedin-logo" weight="fill" size={18} /></a>
+              <a href={share.x} target="_blank" rel="noopener" aria-label="Share on X"><Icon name="x-logo" weight="fill" size={18} /></a>
+              <button type="button" data-copy={url}><Icon name="link-simple" weight="bold" size={18} /><span>Copy link</span></button>
+            </div>
+          </div>
+          <div class="helpful" data-helpful>
+            <p>Was this guide helpful?</p>
+            <div class="helpful-row">
+              <button type="button" data-vote="yes"><Icon name="thumbs-up" weight="fill" size={18} />Yes</button>
+              <button type="button" data-vote="no"><Icon name="thumbs-down" weight="fill" size={18} />Not really</button>
+            </div>
+            <p class="helpful-thanks" data-helpful-thanks role="status" aria-live="polite"></p>
+          </div>
+        </footer>
       </div>
     </div>
   </article>
-  <CtaBand />
+
+  {others.length > 0 && (
+    <section class="more">
+      <div class="container">
+        <h2>Keep reading</h2>
+        <ul class="more-grid">
+          {others.map((p) => {
+            const t = themeFor(p);
+            return (
+              <li style={`--bg:${t.bg};--pop:${t.pop}`}>
+                <a href={`/blog/${p.id}`}>
+                  <span class="badge"><Icon name={iconFor(p)} weight="fill" size={14} />{p.data.tags[0]}</span>
+                  <h3>{p.data.title}</h3>
+                  <span class="more-go">{minutes(p.body)} min read <Icon name="arrow-up-right" weight="bold" size={16} /></span>
+                </a>
+              </li>
+            );
+          })}
+          <li class="more-cta">
+            <a href={whatsappLink('Hi SkaleSeed, I read your guide and have a question.')} target="_blank" rel="noopener" data-cta="blog-whatsapp">
+              <span class="badge dark"><Icon name="whatsapp-logo" weight="fill" size={14} />Ask us</span>
+              <h3>Got a question about your business? Ask on WhatsApp.</h3>
+              <span class="more-go">A real person replies <Icon name="arrow-up-right" weight="bold" size={16} /></span>
+            </a>
+          </li>
+        </ul>
+        <div class="teaser"><AskAITeaser /></div>
+      </div>
+    </section>
+  )}
+
+  <CtaBand title="Ready to put this into practice?" text="We build it for you. See a free demo page with your business name on it before you pay anything." />
+
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
 </BaseLayout>
 
 <style>
-  .narrow { max-width: 760px; }
-  .post-head { padding-block: clamp(48px, 7vw, 96px) var(--s-6); }
-  .post-head .container { display: grid; gap: var(--s-2); }
-  .crumbs { display: flex; gap: 8px; color: var(--text-muted); font-size: var(--fs-small); }
-  .crumbs a { color: var(--label); font-weight: 600; text-decoration: none; }
-  .crumbs a:hover { text-decoration: underline; }
-  h1 { font-size: var(--fs-h1); }
-  .lede { color: var(--text-muted); font-size: 1.125rem; }
-  .meta { color: var(--text-muted); font-size: var(--fs-small); }
+  .read-progress { position: fixed; inset: 0 0 auto; z-index: 60; height: 5px; pointer-events: none; }
+  .read-progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--pop), var(--saffron)); transform: scaleX(var(--p, 0)); transform-origin: left; }
 
-  .prose { font-size: 1.0625rem; line-height: 1.75; color: var(--light-text); }
-  .prose :global(h2) { margin: var(--s-6) 0 var(--s-2); font-size: var(--fs-h3); }
-  .prose :global(p), .prose :global(ul), .prose :global(ol) { margin: 0 0 var(--s-2); color: #2c3d52; }
+  /* Header */
+  .a-head { padding: clamp(16px, 3vw, 32px) clamp(8px, 1.4vw, 20px) 0; }
+  .a-head-card { position: relative; display: grid; justify-items: start; gap: var(--s-3); max-width: 1320px; margin-inline: auto; padding: clamp(28px, 5vw, 64px) clamp(20px, 5vw, 64px); overflow: hidden; border: 2.5px solid var(--navy); border-radius: 32px; background: radial-gradient(circle at 92% 10%, rgb(255 255 255 / 50%), transparent 32%), var(--bg); box-shadow: 8px 8px 0 var(--navy); color: var(--navy); }
+  .crumbs { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+  .crumbs a { display: inline-flex; align-items: center; min-height: 44px; color: var(--navy); font-weight: 800; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 2px solid var(--navy); border-radius: 999px; background: #fff; color: var(--navy); font: 800 .78rem var(--font-display); }
+  .badge.dark { background: var(--saffron); }
+  h1 { position: relative; z-index: 1; max-width: 20ch; font: 850 clamp(2.1rem, 1.3rem + 3.6vw, 4.25rem)/1.02 var(--font-display); letter-spacing: -.04em; animation: rise var(--dur-2) var(--ease) both; }
+  .lede { position: relative; z-index: 1; max-width: 56ch; font-size: clamp(1.05rem, 1rem + .3vw, 1.25rem); font-weight: 500; animation: rise var(--dur-2) .05s var(--ease) both; }
+  .a-meta { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; }
+  .a-meta > span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgb(255 255 255 / 60%); font-size: .875rem; font-weight: 700; }
+  .big-steps { position: absolute; right: clamp(8px, 3vw, 40px); bottom: -.18em; display: grid; justify-items: end; color: rgb(11 31 58 / 11%); font: 900 clamp(8rem, 18vw, 17rem)/.8 var(--font-display); letter-spacing: -.06em; pointer-events: none; }
+  .big-steps small { margin: 0 .2em .5em 0; font-size: .1em; letter-spacing: .2em; text-transform: uppercase; }
+
+  /* Layout */
+  .a-body { display: grid; grid-template-columns: 280px minmax(0, 720px); justify-content: center; gap: clamp(32px, 5vw, 72px); width: min(100% - 2 * var(--gutter), 1120px); margin: clamp(40px, 6vw, 72px) auto var(--section-y); }
+
+  /* TOC + progress */
+  .toc { position: relative; }
+  .toc-box { position: sticky; top: calc(var(--header-h) + 28px); display: grid; gap: var(--s-2); padding: var(--s-3); border: 2px solid var(--navy); border-radius: 22px; background: var(--paper); box-shadow: 5px 5px 0 var(--navy); }
+  .toc-box summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 32px; font: 800 .95rem var(--font-display); list-style: none; cursor: pointer; }
+  .toc-box summary::-webkit-details-marker { display: none; }
+  .toc-count { padding: 3px 10px; border-radius: 999px; background: var(--bg); font-size: .78rem; }
+  .toc-meter { height: 8px; overflow: hidden; border-radius: 999px; background: var(--cream-2); }
+  .toc-meter span { display: block; width: calc(var(--done, 0) * 100%); height: 100%; border-radius: inherit; background: var(--pop); transition: width var(--dur-2) var(--ease); }
+  .toc ol { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+  .toc ol a { display: flex; align-items: flex-start; gap: 10px; padding: 7px 8px; border-radius: 12px; color: var(--text-muted); font-size: .9rem; font-weight: 600; line-height: 1.35; text-decoration: none; transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease); }
+  .toc ol a:hover { background: var(--cream-2); color: var(--text); }
+  .toc ol a.is-on { background: var(--bg); color: var(--navy); }
+  .toc-n { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border: 2px solid var(--navy); border-radius: 50%; background: #fff; color: var(--navy); font: 800 .72rem var(--font-display); transition: background var(--dur-1) var(--ease); }
+  .toc-n.plain { border-color: transparent; background: none; color: var(--label); }
+  .toc-n.is-done { background: var(--navy); color: transparent; position: relative; }
+  .toc-n.is-done::after { content: '✓'; position: absolute; color: var(--saffron); font-size: .8rem; }
+  .toc-cta { display: block; padding: 12px 14px; border-radius: 14px; background: var(--navy); color: #fff; font-size: .9rem; text-decoration: none; }
+  .toc-cta b { color: var(--saffron); }
+
+  /* Article body */
+  .prose { min-width: 0; color: #24364c; font-size: 1.09rem; line-height: 1.78; }
+  .prose :global(> p:first-child) { font-size: 1.25rem; line-height: 1.6; color: var(--navy); font-weight: 500; }
+  .prose :global(p), .prose :global(ul), .prose :global(ol) { margin: 0 0 var(--s-2); }
   .prose :global(li) { margin-bottom: 6px; }
-  .prose :global(a) { color: #2443c4; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .prose :global(li::marker) { color: var(--pop); font-weight: 800; }
+  .prose :global(a:not([class])) { color: #2443c4; font-weight: 600; text-decoration-thickness: 2px; text-underline-offset: 3px; }
   .prose :global(strong) { color: var(--navy); }
-  .prose :global(code) { padding: 2px 6px; border-radius: 6px; background: #e6ebf3; font-size: .9em; }
-  .prose :global(> :first-child) { margin-top: 0; }
-  .prose :global(h2) { scroll-margin-top: calc(var(--header-h) + 24px); }
-  /* "What we did" callouts */
-  .prose :global(blockquote) {
-    position: relative;
-    margin: var(--s-3) 0 var(--s-4);
-    padding: var(--s-3) var(--s-3) var(--s-2) var(--s-3);
-    border: 1px solid var(--light-border);
-    border-radius: var(--r-card);
-    background: var(--white);
-    box-shadow: var(--shadow-light);
+  .prose :global(code) { padding: 2px 7px; border: 1.5px solid var(--navy); border-radius: 7px; background: #fff; font-size: .88em; }
+
+  .prose :global(h2), .prose :global(h3) { position: relative; scroll-margin-top: calc(var(--header-h) + 28px); color: var(--navy); }
+  .prose :global(h2) { margin: clamp(48px, 6vw, 72px) 0 var(--s-2); font: 850 clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem)/1.15 var(--font-display); letter-spacing: -.03em; }
+  .prose :global(h2.step-h) { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding-top: var(--s-3); border-top: 2px dashed rgb(11 31 58 / 18%); }
+  .prose :global(.step-no) { flex: none; display: grid; place-items: center; width: 56px; height: 56px; border: 2.5px solid var(--navy); border-radius: 18px; background: var(--bg); box-shadow: 3px 3px 0 var(--navy); font: 900 1.5rem var(--font-display); rotate: -4deg; }
+  .prose :global(h2.step-h:nth-of-type(even) .step-no) { rotate: 3deg; }
+  .prose :global(.step-title) { flex: 1 1 260px; }
+  .prose :global(.h-anchor) { display: inline-grid; place-items: center; width: 32px; height: 32px; margin-left: 4px; border-radius: 10px; color: var(--label); font-size: 1.1rem; text-decoration: none; opacity: 0; transition: opacity var(--dur-1) var(--ease), background var(--dur-1) var(--ease); }
+  .prose :global(h2:hover .h-anchor), .prose :global(h3:hover .h-anchor), .prose :global(.h-anchor:focus-visible) { opacity: 1; }
+  .prose :global(.h-anchor:hover) { background: var(--cream-2); }
+  .prose :global(.done-btn) { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px 0 10px; border: 2px solid var(--navy); border-radius: 999px; background: #fff; color: var(--navy); font: 700 .82rem var(--font-body); letter-spacing: 0; cursor: pointer; transition: background var(--dur-1) var(--ease), translate var(--dur-1) var(--ease); }
+  .prose :global(.done-btn:hover) { translate: 0 -2px; }
+  .prose :global(.done-box) { display: grid; place-items: center; width: 20px; height: 20px; border: 2px solid var(--navy); border-radius: 6px; }
+  .prose :global(.done-btn[aria-pressed='true']) { background: var(--navy); color: #fff; }
+  .prose :global(.done-btn[aria-pressed='true'] .done-box) { border-color: var(--saffron); background: var(--saffron); }
+  .prose :global(.done-btn[aria-pressed='true'] .done-box::after) { content: '✓'; color: var(--navy); font-size: .75rem; font-weight: 900; }
+
+  /* "What we did" callouts become sticker cards */
+  .prose :global(blockquote) { position: relative; margin: var(--s-4) 0 40px; padding: 30px 24px 10px; border: 2px solid var(--navy); border-radius: 20px; background: #fff; box-shadow: 5px 5px 0 var(--bg), 5px 5px 0 2px var(--navy); }
+  .prose :global(blockquote::before) { content: 'Real project'; position: absolute; top: -14px; left: 18px; padding: 4px 12px; border: 2px solid var(--navy); border-radius: 999px; background: var(--saffron); color: var(--navy); font: 800 .75rem var(--font-display); letter-spacing: .06em; text-transform: uppercase; rotate: -3deg; }
+  .prose :global(blockquote p:first-child strong:first-child) { color: var(--pop); }
+
+  /* Mid-article and finish CTAs */
+  .prose :global(.mid-cta), .all-done { display: grid; gap: 10px; margin: clamp(40px, 6vw, 64px) 0; padding: clamp(22px, 3vw, 32px); border: 2.5px solid var(--navy); border-radius: 24px; background: var(--navy); color: #fff; box-shadow: 6px 6px 0 var(--pop); }
+  .prose :global(.mid-cta-kicker) { margin: 0; color: var(--saffron); font: 800 .85rem var(--font-display); letter-spacing: .06em; text-transform: uppercase; }
+  .prose :global(.mid-cta-title), .ad-title { margin: 0; color: #fff; font: 800 clamp(1.25rem, 1.1rem + .6vw, 1.6rem)/1.25 var(--font-display); letter-spacing: -.02em; }
+  .prose :global(.mid-cta-btn) { justify-self: start; display: inline-flex; align-items: center; min-height: 48px; margin-top: 6px; padding: 0 20px; border: 2px solid #fff; border-radius: 14px; background: var(--saffron); color: var(--navy); font: 800 1rem var(--font-display); text-decoration: none; box-shadow: 4px 4px 0 #fff; transition: translate var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease); }
+  .prose :global(.mid-cta-btn:hover) { translate: -2px -2px; box-shadow: 6px 6px 0 #fff; }
+  .all-done { grid-template-columns: auto 1fr; align-items: center; }
+  .all-done p { margin: 0; color: #c7d2e0; }
+  .all-done .mid-cta-btn { grid-column: 1 / -1; }
+  .party { font-size: 2.6rem; animation: pop-in .6s var(--ease) both; }
+
+  /* Footer: share + helpful */
+  .a-foot { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: var(--s-6); padding-top: var(--s-4); border-top: 2px dashed rgb(11 31 58 / 18%); }
+  .a-foot p { margin: 0 0 10px; color: var(--navy); font: 800 1rem var(--font-display); }
+  .share-row, .helpful-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .share-row a, .share-row button, .helpful-row button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 48px; min-height: 48px; padding: 0 14px; border: 2px solid var(--navy); border-radius: 14px; background: #fff; color: var(--navy); font: 700 .9rem var(--font-body); cursor: pointer; text-decoration: none; box-shadow: 3px 3px 0 var(--navy); transition: translate var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease), background var(--dur-1) var(--ease); }
+  .share-row a:hover, .share-row button:hover, .helpful-row button:hover { translate: -2px -2px; box-shadow: 5px 5px 0 var(--navy); background: var(--bg); }
+  .helpful-row button[aria-pressed='true'] { background: var(--navy); color: #fff; }
+  .helpful-thanks { margin-top: 10px !important; color: var(--text-muted) !important; font: 600 .9rem var(--font-body) !important; }
+
+  /* Keep reading */
+  .more { padding-bottom: var(--section-y); }
+  .more h2 { margin-bottom: var(--s-4); font: 850 var(--fs-h2) var(--font-display); letter-spacing: -.03em; }
+  .more-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 2.4vw, 28px); margin: 0; padding: 0; list-style: none; }
+  .more-grid a { display: grid; align-content: start; gap: var(--s-2); height: 100%; padding: clamp(22px, 2.6vw, 30px); border: 2.5px solid var(--navy); border-radius: 24px; background: var(--bg); color: var(--navy); text-decoration: none; box-shadow: 6px 6px 0 var(--navy); transition: translate var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease); }
+  .more-grid a:hover { translate: -3px -3px; box-shadow: 9px 9px 0 var(--navy); }
+  .more-grid .badge { justify-self: start; }
+  .more-grid h3 { font: 850 1.35rem/1.2 var(--font-display); letter-spacing: -.02em; }
+  .more-go { display: inline-flex; align-items: center; gap: 6px; margin-top: auto; font-weight: 800; }
+  .more-cta a { background: var(--navy); color: #fff; }
+  .more-cta .badge { color: var(--navy); }
+  .teaser { margin-top: clamp(40px, 6vw, 72px); }
+
+  .toast { position: fixed; left: 50%; bottom: 28px; z-index: 70; padding: 12px 20px; border: 2px solid var(--navy); border-radius: 14px; background: var(--saffron); color: var(--navy); font-weight: 800; box-shadow: 4px 4px 0 var(--navy); translate: -50% 140%; opacity: 0; transition: translate var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease); pointer-events: none; }
+  .toast.show { translate: -50% 0; opacity: 1; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(var(--rise)); } }
+  @keyframes pop-in { from { opacity: 0; transform: scale(.4) rotate(-20deg); } }
+
+  @media (max-width: 1020px) {
+    .a-body { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
+    .toc-box { position: static; }
+    .more-grid { grid-template-columns: 1fr 1fr; }
   }
-  .prose :global(blockquote::before) {
-    content: '';
-    position: absolute;
-    top: 18px;
-    bottom: 18px;
-    left: 0;
-    width: 4px;
-    border-radius: 0 4px 4px 0;
-    background: var(--saffron);
+  @media (max-width: 640px) {
+    .a-head-card { border-radius: 24px; box-shadow: 5px 5px 0 var(--navy); }
+    .a-foot { grid-template-columns: 1fr; }
+    .more-grid { grid-template-columns: 1fr; }
+    .prose :global(.step-no) { width: 48px; height: 48px; font-size: 1.3rem; }
+    .prose :global(.h-anchor) { opacity: .6; }
   }
-  .prose :global(blockquote p) { color: #2c3d52; }
-  .prose :global(blockquote p:first-child strong:first-child) { color: var(--blue); }
-  .after { margin-top: var(--s-6); }
+  @media (prefers-reduced-motion: reduce) {
+    h1, .lede, .party { animation: none; }
+    .read-progress span, .toc-meter span { transition: none; }
+  }
 </style>
+
+<script>
+  const article = document.querySelector<HTMLElement>('[data-post]');
+  const postId = article?.dataset.post ?? '';
+  const toast = document.querySelector<HTMLElement>('[data-toast]');
+  let toastTimer = 0;
+  const say = (msg: string) => {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove('show'), 1800);
+  };
+  const store = {
+    get(key: string) { try { return localStorage.getItem(key); } catch { return null; } },
+    set(key: string, v: string) { try { localStorage.setItem(key, v); } catch { /* private mode */ } },
+  };
+
+  // Reading progress bar
+  const bar = document.querySelector<HTMLElement>('[data-read-bar]');
+  const prose = document.querySelector<HTMLElement>('[data-prose]');
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      if (!bar || !prose) return;
+      const r = prose.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight * 0.6)));
+      bar.style.setProperty('--p', p.toFixed(3));
+    });
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Section links copy themselves
+  const copy = async (text: string, msg: string) => {
+    try { await navigator.clipboard.writeText(text); say(msg); } catch { say('Copy not allowed here'); }
+  };
+  document.querySelectorAll<HTMLAnchorElement>('[data-anchor]').forEach((a) =>
+    a.addEventListener('click', () => {
+      const link = `${location.origin}${location.pathname}${a.getAttribute('href')}`;
+      history.replaceState(null, '', a.getAttribute('href'));
+      void copy(link, 'Link to this section copied');
+    }),
+  );
+  document.querySelector<HTMLButtonElement>('[data-copy]')?.addEventListener('click', (e) => {
+    void copy((e.currentTarget as HTMLElement).dataset.copy ?? location.href, 'Link copied');
+  });
+
+  // Step checklist, remembered on this device
+  const doneKey = `fn-done:${postId}`;
+  const done = new Set<string>(JSON.parse(store.get(doneKey) ?? '[]'));
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-done]'));
+  const count = document.querySelector('[data-done-count]');
+  const meter = document.querySelector<HTMLElement>('.toc-meter');
+  const allDone = document.querySelector<HTMLElement>('[data-all-done]');
+  const render = () => {
+    buttons.forEach((b) => {
+      const on = done.has(b.dataset.done!);
+      b.setAttribute('aria-pressed', String(on));
+      b.querySelector('.done-label')!.textContent = on ? 'Done' : 'Mark done';
+    });
+    document.querySelectorAll<HTMLElement>('[data-toc-check]').forEach((n) => n.classList.toggle('is-done', done.has(n.dataset.tocCheck!)));
+    if (count) count.textContent = `${done.size} / ${buttons.length} done`;
+    meter?.style.setProperty('--done', String(buttons.length ? done.size / buttons.length : 0));
+    if (allDone) allDone.hidden = !buttons.length || done.size < buttons.length;
+  };
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const id = b.dataset.done!;
+      if (done.has(id)) done.delete(id);
+      else done.add(id);
+      store.set(doneKey, JSON.stringify([...done]));
+      render();
+      if (done.has(id)) say(done.size === buttons.length ? 'All steps done! 🎉' : `Step done · ${done.size} of ${buttons.length}`);
+    }),
+  );
+  render();
+
+  // Highlight the section being read in the table of contents
+  const tocLinks = new Map(Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')).map((a) => [a.dataset.tocLink!, a]));
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (e.isIntersecting) tocLinks.forEach((a, id) => a.classList.toggle('is-on', id === e.target.id));
+    }),
+    { rootMargin: '-20% 0px -70% 0px' },
+  );
+  tocLinks.forEach((_, id) => { const h = document.getElementById(id); if (h) io.observe(h); });
+
+  // Collapse the guide list on phones so the article starts sooner
+  if (matchMedia('(max-width: 1020px)').matches) document.querySelector<HTMLDetailsElement>('[data-toc]')?.removeAttribute('open');
+
+  // Was this helpful?
+  const thanks = document.querySelector('[data-helpful-thanks]');
+  const voteKey = `fn-vote:${postId}`;
+  const votes = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-vote]'));
+  const showVote = (v: string | null) => {
+    votes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.vote === v)));
+    if (thanks && v) thanks.innerHTML = v === 'yes'
+      ? 'Thank you! Want this done for your business? <a href="/contact">Get a free demo</a>.'
+      : 'Thanks for telling us. <a href="/contact">Tell us what was missing</a> and we will answer.';
+  };
+  votes.forEach((b) => b.addEventListener('click', () => { store.set(voteKey, b.dataset.vote!); showVote(b.dataset.vote!); }));
+  showVote(store.get(voteKey));
+</script>
