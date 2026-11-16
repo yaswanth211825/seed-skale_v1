@@ -40,6 +40,7 @@ const group =
   : path === '/work' ? 'Work'
   : path.startsWith('/work/') ? 'Work project'
   : path === '/services' ? 'Services'
+  : path.startsWith('/services/') ? 'Service page'
   : path === '/how-it-works' ? 'How it works'
   : path === '/contact' ? 'Contact'
   : path === '/ask-ai' ? 'Ask AI'

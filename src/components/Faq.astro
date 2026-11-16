@@ -1,9 +1,14 @@
 ---
 import { faq } from '../data/faq';
+
+interface Props {
+  items?: { q: string; a: string }[];
+}
+const { items = faq } = Astro.props;
 ---
 
 <div class="faq" data-stagger>
-  {faq.map((item, i) => (
+  {items.map((item, i) => (
     <details class="item" open={i === 0}>
       <summary>
         <span>{item.q}</span>

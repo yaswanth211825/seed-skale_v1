@@ -1,5 +1,7 @@
 # SkaleSeed
 
+Also written as Skale Seed or Scale Seed.
+
 > SkaleSeed is a web design, web app, AI and digital marketing studio in Hyderabad, Telangana, India. It builds websites, SaaS platforms, AI assistants and automation, and runs Meta ads, SEO and Instagram content for small and growing businesses. Clients see a free demo page with their business name before paying anything.
 
 ## Key facts
@@ -20,6 +22,14 @@
 - [ZeroX](https://www.skaleseed.com/work/zerox): queue-free campus stationery and printing at NIT Warangal; 800+ users and 600+ orders in the first week.
 - [TradingFloor](https://www.skaleseed.com/work/tradingfloor): private copy-trading SaaS for futures and options that executes one strategy across all client accounts at once.
 - [AI lead agent](https://www.skaleseed.com/work/ai-lead-agent): product-aware AI agent that finds high-intent customers and starts personalised outreach.
+
+## Services
+
+- [Website design and development in Hyderabad](https://www.skaleseed.com/services/website-design)
+- [Custom web app and SaaS development](https://www.skaleseed.com/services/saas-development)
+- [AI chatbots, voice assistants and automation](https://www.skaleseed.com/services/ai-automation)
+- [Digital marketing, SEO and Meta ads in Hyderabad](https://www.skaleseed.com/services/digital-marketing)
+- [Instagram marketing and reels content](https://www.skaleseed.com/services/instagram-marketing)
 
 ## Pages
 

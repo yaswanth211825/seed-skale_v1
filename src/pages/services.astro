@@ -7,13 +7,14 @@ import PageScene from '../components/PageScene.astro';
 import Statement from '../components/Statement.astro';
 import { services } from '../data/services';
 import { projects } from '../data/projects';
+import { pageFor } from '../data/servicePages';
 
-const withProof = services.map((s) => ({ ...s, project: projects.find((p) => p.slug === s.proof) }));
+const withProof = services.map((s) => ({ ...s, project: projects.find((p) => p.slug === s.proof), page: pageFor(s.id) }));
 ---
 
 <BaseLayout
-  title="Services | SkaleSeed"
-  description="Web apps, websites, AI assistants, Meta ads, SEO and Instagram content for growing businesses. One team from first idea to real customers."
+  title="Website Design, SaaS & Digital Marketing Services in Hyderabad | SkaleSeed"
+  description="SkaleSeed services in Hyderabad: website design and development, custom web apps and SaaS, AI chatbots and automation, SEO, Meta ads and Instagram content. One team."
 >
   <PageIntro
     label="Services"
@@ -50,6 +51,11 @@ const withProof = services.map((s) => ({ ...s, project: projects.find((p) => p.s
           <h2>{s.title}</h2>
           <p class="lede">{s.summary}</p>
           <ul class="ticks">{s.points.map((p) => <li>{p}</li>)}</ul>
+          {s.page && (
+            <a class="more-link" href={`/services/${s.page.slug}`}>
+              More about {s.title.toLowerCase()} <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          )}
           {s.project && (
             <a class="proof-link" href={`/work/${s.project.slug}`}>
               See how we did it for {s.project.name} <span class="arrow" aria-hidden="true">→</span>
@@ -108,6 +114,8 @@ const withProof = services.map((s) => ({ ...s, project: projects.find((p) => p.s
   .lede { color: var(--text-muted); font-size: 1.125rem; max-width: 48ch; }
   .ticks { display: grid; gap: var(--s-1); margin: var(--s-1) 0 0; padding: 0; list-style: none; font-weight: 500; }
   .ticks li::before { content: '✓'; margin-right: 10px; color: var(--label); font-weight: 700; }
+  .more-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: var(--s-1); padding: 0 18px; border: 1px solid var(--border); border-radius: 999px; color: var(--text); font-weight: 700; text-decoration: none; }
+  .more-link:hover { border-color: var(--label); }
   .proof-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: var(--s-1); color: var(--label); font-weight: 700; text-decoration: none; }
 
   @media (max-width: 1024px) {

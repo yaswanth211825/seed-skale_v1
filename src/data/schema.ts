@@ -9,6 +9,7 @@ export const organizationSchema = {
   '@type': ['Organization', 'ProfessionalService'],
   '@id': org,
   name: site.name,
+  alternateName: ['Skale Seed', 'Scale Seed', 'SkaleSeed Hyderabad'],
   url: site.url,
   logo: `${site.url}/icon-512.png`,
   image: `${site.url}/og-image.png`,
@@ -39,6 +40,8 @@ export const organizationSchema = {
   sameAs: socials.filter((s) => s.href.startsWith('https://www.instagram.com')).map((s) => s.href),
   knowsAbout: [
     'Website design',
+    'Website development',
+    'Digital marketing',
     'Web app development',
     'SaaS development',
     'AI agents and automation',
@@ -63,6 +66,7 @@ export const websiteSchema = {
   '@id': `${site.url}/#website`,
   url: site.url,
   name: site.name,
+  alternateName: ['Skale Seed', 'Scale Seed'],
   publisher: { '@id': org },
   inLanguage: 'en-IN',
 };

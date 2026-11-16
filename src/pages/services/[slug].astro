@@ -1,0 +1,223 @@
+---
+// One page per service, written for local search ("website design company in Hyderabad" etc.).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import ServiceArt from '../../components/ServiceArt.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { servicePages, areas, type ServicePage } from '../../data/servicePages';
+import { projects } from '../../data/projects';
+import { site, whatsappLink } from '../../data/site';
+
+export function getStaticPaths() {
+  return servicePages.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: ServicePage };
+const url = `${site.url}/services/${page.slug}`;
+const project = projects.find((p) => p.slug === page.proof);
+const others = servicePages.filter((p) => p.slug !== page.slug);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: page.schemaName,
+    alternateName: page.keywords,
+    serviceType: page.schemaName,
+    description: page.description,
+    url,
+    provider: { '@id': `${site.url}/#org` },
+    areaServed: [
+      { '@type': 'City', name: 'Hyderabad', containedInPlace: { '@type': 'State', name: 'Telangana' } },
+      ...areas.map((a) => ({ '@type': 'Place', name: `${a}, Hyderabad` })),
+      { '@type': 'State', name: 'Andhra Pradesh' },
+      { '@type': 'Country', name: 'India' },
+    ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: page.schemaName,
+      itemListElement: page.includes.map((i) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: i.title, description: i.text } })),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: page.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: `${site.url}/services` },
+      { '@type': 'ListItem', position: 3, name: page.h1, item: url },
+    ],
+  },
+];
+---
+
+<BaseLayout title={page.title} description={page.description} schema={schema}>
+  <PageIntro label={page.label} title={page.h1} accent={page.accent} lede={page.lede} ticker={page.includes.map((i) => i.title)}>
+    <div class="intro-actions">
+      <a class="btn btn-primary" href="/contact">Get a free demo <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn btn-secondary" href={whatsappLink(`Hi SkaleSeed, I am interested in ${page.schemaName.toLowerCase()}.`)} target="_blank" rel="noopener">Chat on WhatsApp</a>
+    </div>
+    <div slot="scene" class="art"><ServiceArt kind={page.serviceId} /></div>
+  </PageIntro>
+
+  <nav class="container crumbs" aria-label="Breadcrumb">
+    <a href="/">Home</a><span aria-hidden="true">/</span><a href="/services">Services</a><span aria-hidden="true">/</span><span aria-current="page">{page.h1}</span>
+  </nav>
+
+  <section class="section">
+    <div class="container about">
+      <div class="about-copy" data-reveal>
+        <h2>Why it matters</h2>
+        {page.intro.map((p) => <p>{p}</p>)}
+      </div>
+      <aside class="for-who" data-reveal>
+        <h2>Who it is for</h2>
+        <ul>{page.forWho.map((w) => <li><Icon name="check-circle" weight="fill" size={20} />{w}</li>)}</ul>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section panel mist">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="label">What you get</p>
+        <h2>Everything included, <em>one team.</em></h2>
+      </div>
+      <ul class="inc-grid" data-stagger>
+        {page.includes.map((i, n) => (
+          <li class="inc">
+            <span class="inc-n">{String(n + 1).padStart(2, '0')}</span>
+            <h3>{i.title}</h3>
+            <p>{i.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container how">
+      <div data-reveal>
+        <p class="label">How we work</p>
+        <h2>See it first. <em>Decide later.</em></h2>
+        <ol class="how-steps">
+          <li><b>Free demo.</b> Tell us about your business and we make a sample with your name on it.</li>
+          <li><b>Build.</b> Our own team in Hyderabad designs and builds it with you, step by step.</li>
+          <li><b>Launch.</b> Live on your own domain and accounts, set up for Google from day one.</li>
+          <li><b>Grow.</b> SEO, ads, content and automation when you are ready for more customers.</li>
+        </ol>
+        <a class="text-link" href="/how-it-works">More on how it works <span aria-hidden="true">→</span></a>
+      </div>
+      {project && (
+        <a class="proof-card" href={`/work/${project.slug}`} data-reveal>
+          <span class="label">Real project</span>
+          <h3>{project.name}</h3>
+          <p class="sector">{project.sector}</p>
+          <p>{project.summary}</p>
+          <span class="go">Read the case study <Icon name="arrow-up-right" weight="bold" size={16} /></span>
+        </a>
+      )}
+    </div>
+  </section>
+
+  <section class="section panel mist">
+    <div class="container local" data-reveal>
+      <p class="label">Where we work</p>
+      <h2>Based in Hyderabad, <em>working everywhere.</em></h2>
+      <p>We meet businesses across Hyderabad and Secunderabad, and work online with clients across Telangana, Andhra Pradesh, the rest of India and abroad.</p>
+      <ul class="areas">{areas.map((a) => <li>{a}</li>)}<li>Telangana</li><li>Andhra Pradesh</li><li>All of India</li></ul>
+    </div>
+  </section>
+
+  <section class="section light" id="faq">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="label">Questions</p>
+        <h2>{page.h1}: common questions.</h2>
+      </div>
+      <Faq items={page.faq} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="label">More services</p>
+        <h2>Grow in steps.</h2>
+      </div>
+      <ul class="others">
+        {others.map((o) => (
+          <li><a href={`/services/${o.slug}`}><span>{o.h1}</span><Icon name="arrow-right" weight="bold" size={18} /></a></li>
+        ))}
+        <li><a href="/services"><span>All services</span><Icon name="arrow-right" weight="bold" size={18} /></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title="Let's get your business found." text="Tell us what you do. We will send a free demo with your business name on it, before you pay anything." />
+</BaseLayout>
+
+<style>
+  .intro-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .art { width: 100%; max-width: 440px; margin-inline: auto; }
+  .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-block: var(--s-2) 0; color: var(--text-muted); font-size: var(--fs-small); }
+  .crumbs a { color: var(--text-muted); }
+  .crumbs [aria-current] { color: var(--text); font-weight: 600; }
+
+  .about { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--s-8); align-items: start; }
+  .about-copy { display: grid; gap: var(--s-2); max-width: 62ch; }
+  .about-copy p { color: var(--text-muted); font-size: 1.1rem; }
+  .for-who { padding: var(--s-4); border: 1px solid var(--border); border-radius: var(--r-panel); background: var(--paper, #fff); }
+  .for-who h2 { margin-bottom: var(--s-2); font-size: 1.25rem; }
+  .for-who ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .for-who li { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+  .for-who :global(svg) { flex: none; color: var(--label); }
+
+  .mist { background: linear-gradient(180deg, #eef2f8, #e6ecf5); }
+  .inc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
+  .inc { display: grid; align-content: start; gap: 8px; padding: var(--s-4); border: 1px solid var(--border); border-radius: var(--r-card); background: rgb(255 255 255 / 70%); }
+  .inc-n { color: var(--label); font: 800 .8rem var(--font-display); }
+  .inc h3 { font-size: 1.15rem; }
+  .inc p { color: var(--text-muted); }
+
+  .how { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--s-8); align-items: center; }
+  .how h2 { margin-block: 8px var(--s-3); }
+  .how-steps { display: grid; gap: var(--s-2); margin: 0 0 var(--s-3); padding-left: 1.2em; color: var(--text-muted); }
+  .how-steps b { color: var(--text); }
+  .text-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--label); font-weight: 700; text-decoration: none; }
+  .proof-card { display: grid; gap: 8px; padding: var(--s-4); border-radius: var(--r-panel); background: var(--navy); color: #fff; text-decoration: none; box-shadow: var(--shadow-dark); transition: transform var(--dur-1) var(--ease); }
+  .proof-card:hover { transform: translateY(-4px); }
+  .proof-card .label { color: var(--saffron); }
+  .proof-card h3 { font-size: 1.6rem; color: #fff; }
+  .proof-card .sector { color: var(--saffron); font-weight: 600; }
+  .proof-card p { color: rgb(255 255 255 / 80%); }
+  .proof-card .go { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-weight: 700; }
+
+  .local { display: grid; gap: var(--s-2); justify-items: start; max-width: 860px; }
+  .local p { color: var(--text-muted); font-size: 1.1rem; }
+  .areas { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--s-1) 0 0; padding: 0; list-style: none; }
+  .areas li { padding: 8px 14px; border: 1px solid var(--border); border-radius: 999px; background: rgb(255 255 255 / 70%); font-size: .92rem; font-weight: 500; }
+
+  .others { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
+  .others a { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); min-height: 64px; padding: var(--s-2) var(--s-3); border: 1px solid var(--border); border-radius: var(--r-card); color: var(--text); font-weight: 600; text-decoration: none; transition: border-color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease); }
+  .others a:hover { border-color: var(--label); transform: translateY(-2px); }
+
+  @media (max-width: 1024px) {
+    .inc-grid, .others { grid-template-columns: repeat(2, 1fr); }
+    .about, .how { gap: var(--s-6); }
+  }
+  @media (max-width: 768px) {
+    .about, .how, .inc-grid, .others { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .proof-card, .others a { transition: none; }
+  }
+</style>

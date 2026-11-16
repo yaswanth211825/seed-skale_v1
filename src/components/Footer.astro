@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import logo from '../assets/brand/logo-horizontal.png';
 import SocialIcon from './SocialIcon.astro';
 import { site, nav, cta, socials, whatsappLink } from '../data/site';
+import { servicePages } from '../data/servicePages';
 
 const year = new Date().getFullYear();
 ---
@@ -13,7 +14,7 @@ const year = new Date().getFullYear();
       <a href="/" aria-label="SkaleSeed home">
         <Image src={logo} alt="SkaleSeed" height={32} densities={[1, 2]} loading="lazy" />
       </a>
-      <p>{site.tagline}. Based in {site.location.split(',')[0]}, working everywhere.</p>
+      <p>SkaleSeed (Skale Seed) is a website design, web app and digital marketing company in Hyderabad, working with businesses everywhere.</p>
       <a class="btn btn-primary" href={cta.href}>{cta.label}</a>
     </div>
 
@@ -23,6 +24,13 @@ const year = new Date().getFullYear();
         <li><a href="/">Home</a></li>
         {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
         <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer-col" aria-label="Services">
+      <h2>Services</h2>
+      <ul>
+        {servicePages.map((p) => <li><a href={`/services/${p.slug}`}>{p.h1}</a></li>)}
       </ul>
     </nav>
 
@@ -73,7 +81,7 @@ const year = new Date().getFullYear();
   }
   .footer-grid {
     display: grid;
-    grid-template-columns: 1.6fr 1fr 1.2fr;
+    grid-template-columns: 1.4fr .8fr 1.3fr 1.1fr;
     gap: var(--s-6) var(--s-4);
     padding-bottom: var(--s-4);
   }
@@ -140,6 +148,10 @@ const year = new Date().getFullYear();
 
   @media (min-width: 961px) {
     .footer-bottom { padding-bottom: var(--s-3); }
+  }
+  @media (max-width: 1100px) {
+    .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; max-width: 520px; }
   }
   @media (max-width: 860px) {
     .footer-grid { grid-template-columns: 1fr 1fr; }
