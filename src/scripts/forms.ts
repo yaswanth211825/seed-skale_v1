@@ -136,13 +136,17 @@ document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => 
       show(f, message);
       return Boolean(message);
     });
+    const report = (status: string, extra: Record<string, unknown> = {}) =>
+      form.dispatchEvent(new CustomEvent('ss:form', { detail: { status, ...extra } }));
     if (invalid.length) {
+      report('invalid', { fields: invalid.map((f) => f.name) });
       if (status) status.textContent = `Please fix ${invalid.length === 1 ? 'the highlighted field' : `the ${invalid.length} highlighted fields`}.`;
       invalid[0].focus();
       return;
     }
     const trap = form.querySelector<HTMLInputElement>('[name="_gotcha"]');
     if (trap?.value || Date.now() - started < 2500) {
+      report('blocked_spam_guard');
       if (status) status.textContent = 'Please wait a moment and try again.';
       return;
     }
@@ -168,12 +172,14 @@ document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => 
         headers: { Accept: 'application/json' },
       });
       if (!res.ok) throw new Error(String(res.status));
+      report('success', { country: form.querySelector<HTMLSelectElement>('[data-cc]')?.value });
       form.hidden = true;
       if (success) {
         success.hidden = false;
         success.focus();
       }
-    } catch {
+    } catch (err) {
+      report(err instanceof Error && /^\d+$/.test(err.message) ? `http_${err.message}` : 'network');
       if (status) {
         status.innerHTML =
           'We could not send that just now. Please try again, or <a href="https://wa.me/919515647977" target="_blank" rel="noopener">message us on WhatsApp</a>.';

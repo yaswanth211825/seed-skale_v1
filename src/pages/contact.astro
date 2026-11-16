@@ -25,7 +25,7 @@ const needs = ['Website', 'Web app or SaaS', 'AI assistant', 'Meta ads and SEO',
   <section class="section">
     <div class="container contact-grid">
       <div>
-        <form class="form-card" action={site.formEndpoint} method="POST" data-form data-success="contact-success" novalidate>
+        <form id="contact-form" class="form-card" action={site.formEndpoint} method="POST" data-form data-success="contact-success" novalidate>
           <input type="hidden" name="_subject" value="New free demo request" />
           <input type="hidden" name="project_reference" value="" data-ref />
           <div class="f-trap" aria-hidden="true"><label>Leave empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label></div>

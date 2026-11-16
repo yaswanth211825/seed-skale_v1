@@ -21,7 +21,7 @@ const live = socials.filter((s) => s.external);
           This SkaleSeed channel is still being set up. Leave your details and we will tell you the moment it goes live.
         </p>
 
-        <form class="form-card" action={site.formEndpoint} method="POST" data-form data-success="soon-success" novalidate>
+        <form id="coming-soon-form" class="form-card" action={site.formEndpoint} method="POST" data-form data-success="soon-success" novalidate>
           <input type="hidden" name="_subject" value="Coming soon signup" />
           <input type="hidden" name="channel" value="" data-channel />
           <div class="f-trap" aria-hidden="true"><label>Leave empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label></div>

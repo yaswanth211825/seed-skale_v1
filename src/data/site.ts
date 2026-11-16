@@ -7,6 +7,7 @@ export const site = {
   whatsappDisplay: '+91 95156 47977',
   email: 'skaleseed@gmail.com',
   formEndpoint: 'https://formspree.io/f/xaeerobd',
+  gaId: 'G-0N0LFVW9YY',
 };
 
 export const nav = [

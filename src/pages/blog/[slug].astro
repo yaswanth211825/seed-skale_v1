@@ -70,7 +70,15 @@ const schema = [
 <BaseLayout title={`${post.data.title} | SkaleSeed`} description={post.data.description} schema={schema} type="article">
   <div class="read-progress" aria-hidden="true" style={`--pop:${th.pop}`}><span data-read-bar></span></div>
 
-  <article class="fn-article" style={`--bg:${th.bg};--pop:${th.pop}`} data-post={post.id}>
+  <article class="fn-article" style={`--bg:${th.bg};--pop:${th.pop}`} data-post={post.id}
+    data-title={post.data.title}
+    data-topic={post.data.tags[0]}
+    data-tags={post.data.tags.join(', ')}
+    data-steps={steps}
+    data-words={words}
+    data-minutes={minutes(body)}
+    data-published={post.data.published.toISOString().slice(0, 10)}
+  >
     <header class="a-head">
       <div class="a-head-card">
         <nav class="crumbs" aria-label="Breadcrumb">
